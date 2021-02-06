@@ -92,20 +92,21 @@ unsigned char* createBitmapInfoHeader(int height, int width) {
 }
 
 // read the input data
-std::vector<int> readimage(size_t& heigth, size_t& width, const char* filename) {
-  std::ifstream myfile(filename, std::ios::binary);
-  myfile >> heigth;
-  myfile >> width;
-  std::vector<int> pixels(heigth * width);
-  for (auto& pixel : pixels) {
-    myfile >> pixel;
-  }
+int16_t* readimage(size_t& heigth, size_t& width, const char* filename) {
+  //myfile >> heigth;
+  //myfile >> width;
+  size_t half_height = 0;  // unbedingt ändern
+  int16_t* pixels = (int16_t*)malloc(half_height * width);
+  FILE* myfile = fopen(filename, "rb");
+  size_t size = fread(pixels, sizeof(int16_t), half_height * width, myfile);
+  fclose(myfile);
+  // size noch mit assert abfangen
   return pixels;
 }
 
-void printimage() {
+void printimage(const char *filename) {
   // image_name, max_iter, color may become arguments in the future
-  size_t maxiter         = 50;
+  int maxiter         = 50;
   const char* image_name = "testimg.bmp";
 
   const double red   = 0.8;
@@ -113,14 +114,14 @@ void printimage() {
   const double blue  = 0.8;
 
   size_t half_height, width;
-  const std::vector<int> pixels = readimage(half_height, width, "image.txt");
+  const int16_t* pixels = readimage(half_height, width, filename);
 
   const size_t half_size = half_height * width;
   const size_t size      = 2 * half_size;
   maxiter                = 0;
-  for (auto& pixel : pixels) {
-    if (pixel > maxiter) {
-      maxiter = pixel;
+  for(size_t i=0; i<half_size; ++i) {
+    if (pixels[i] > maxiter) {
+      maxiter = pixels[i];
     }
   }
 
@@ -142,5 +143,4 @@ void printimage() {
 
   generateBitmapImage((unsigned char*) image, 2 * half_height, width, image_name);
   std::cout << "maximum Iterations: " << maxiter << std::endl;
-  std::cout << "Successfully done!" << std::endl;
 }

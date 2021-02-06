@@ -1,1 +1,1 @@
-void printimage();
+void printimage(const char* filename);
