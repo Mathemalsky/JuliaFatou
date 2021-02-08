@@ -36,18 +36,22 @@ void julia_fatou(const char* filename) {
     }
   }
 
-  FILE* myfile = fopen(filename,"wb");
-  // write half_height, width
-  fwrite(pixels,sizeof(pixels[0]),half_height*width,myfile);
-  fclose(myfile);
+  std::ofstream myfile(filename, std::ios::binary);
+  myfile.write((char*)&width, sizeof(width));
+  myfile.write((char*)&half_height, sizeof(half_height));
+  myfile.write((char*)&pixels, half_height * width);
+  myfile.close();
+
+  free(pixels);
 }
 
 int main(int argc, char** argv) {
+  const char* filename = argv[2];
   if (std::strcmp(argv[1], "julia") == 0) {
-    julia_fatou(argv[2]);
+    julia_fatou(filename);
   }
   else if (std::strcmp(argv[1], "print") == 0) {
-    printimage(argv[2]);
+    printimage(filename);
   }
 
   std::cout << "Successfully done!" << std::endl;

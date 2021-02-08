@@ -2,8 +2,8 @@
 
 #include <fstream>
 #include <iostream>
-#include <math.h>
-#include <stdio.h>
+#include <cmath>
+#include <cstdio>
 #include <vector>
 
 const size_t BYTES_PER_PIXEL  = 3;  /// red, green, & blue
@@ -92,29 +92,26 @@ unsigned char* createBitmapInfoHeader(int height, int width) {
 }
 
 // read the input data
-int16_t* readimage(size_t& heigth, size_t& width, const char* filename) {
-  //myfile >> heigth;
-  //myfile >> width;
-  size_t half_height = 0;  // unbedingt ändern
-  int16_t* pixels = (int16_t*)malloc(half_height * width);
-  FILE* myfile = fopen(filename, "rb");
-  size_t size = fread(pixels, sizeof(int16_t), half_height * width, myfile);
-  fclose(myfile);
-  // size noch mit assert abfangen
+__int16_t* readimage(size_t& half_height, size_t& width, const char* filename) {
+  std::ifstream myfile(filename, std::ios::binary);
+  myfile.read((char*)&width,sizeof(width));
+  myfile.read((char*)&half_height,sizeof(half_height));
+  __int16_t* pixels = (__int16_t*)malloc(half_height * width);
+  myfile.read((char*)&pixels, half_height * width);
+  myfile.close();
   return pixels;
 }
 
 void printimage(const char *filename) {
   // image_name, max_iter, color may become arguments in the future
   int maxiter         = 50;
-  const char* image_name = "testimg.bmp";
 
   const double red   = 0.8;
   const double green = 0;
   const double blue  = 0.8;
 
   size_t half_height, width;
-  const int16_t* pixels = readimage(half_height, width, filename);
+  int16_t* pixels = readimage(half_height, width, filename);
 
   const size_t half_size = half_height * width;
   const size_t size      = 2 * half_size;
@@ -141,6 +138,8 @@ void printimage(const char *filename) {
     image[size - 1 - i][0] = pixel_blue;
   }
 
-  generateBitmapImage((unsigned char*) image, 2 * half_height, width, image_name);
+  free(pixels);
+
+  generateBitmapImage((unsigned char*) image, 2 * half_height, width, filename);
   std::cout << "maximum Iterations: " << maxiter << std::endl;
 }
