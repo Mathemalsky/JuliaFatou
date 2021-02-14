@@ -22,36 +22,46 @@ void julia_fatou(const char* filename) {
 
   const size_t width = std::abs(double(start.real() * 2 / step));
   const size_t half_height = std::abs(double(start.imag() / step));
-  int16_t* pixels = (int16_t*)malloc(width * half_height);
+  __int16_t* pixels = (__int16_t*)malloc(width * half_height * sizeof(__uint16_t));
 
-  for (size_t i = 0; i < half_height; ++i) {
-    for (size_t j = 0; j < width; ++j) {
+  for(size_t i = 0; i < half_height; ++i) {
+    for(size_t j = 0; j < width; ++j) {
       std::complex<double> z(start.real() + step * j, start.real() + step * i);
-      size_t counter = 0;
+      __int16_t counter = 0;
       do {
         z = function(z);
         ++counter;
-      } while (std::abs(z) < norm_limit && counter <= max_iter);
+      } while (std::abs(z) < norm_limit && counter <= (__int16_t)max_iter);
       pixels[j + i * width] = counter;
     }
   }
 
+  /*
+  for(size_t i=0; i<5; ++i) {
+    std::cout<<pixels[i]<<" ";
+  }
+  std::cout<<std::endl;
+  */
+
   std::ofstream myfile(filename, std::ios::binary);
   myfile.write((char*)&width, sizeof(width));
   myfile.write((char*)&half_height, sizeof(half_height));
-  myfile.write((char*)&pixels, half_height * width);
+  myfile.write((char*)pixels, half_height * width * sizeof(__int16_t));
+  assert(myfile.fail() == 0 && "Could not write correctly!");
   myfile.close();
 
   free(pixels);
 }
 
 int main(int argc, char** argv) {
-  const char* filename = argv[2];
-  if (std::strcmp(argv[1], "julia") == 0) {
+  if(std::strcmp(argv[1], "julia") == 0) {
+    const char* filename = argv[2];
     julia_fatou(filename);
   }
-  else if (std::strcmp(argv[1], "print") == 0) {
-    printimage(filename);
+  else if(std::strcmp(argv[1], "print") == 0) {
+    const char* inputFilename = argv[2];
+    const char* outputFilename = argv[3];
+    printimage(inputFilename, outputFilename);
   }
 
   std::cout << "Successfully done!" << std::endl;

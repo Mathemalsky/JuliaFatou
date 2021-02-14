@@ -5,9 +5,7 @@ project(JuliaFatou)
 # specify where the output should be compiled
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
 
-set(CMAKE_BUILD_TYPE=Debug)
-
-set(CXX_FLAGS= "-c++17 -g")
+set(CXXFLAGS= "-c++17 -g -pedantic -Wall -Wextra")
 
 set(SOURCES
         main.cpp
