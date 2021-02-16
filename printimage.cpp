@@ -96,19 +96,19 @@ unsigned char* createBitmapInfoHeader(int height, int width) {
 __int16_t* readimage(size_t& half_height, size_t& width, const char* filename) {
   std::ifstream myfile(filename, std::ios::binary);
 
-  myfile.read((char*)&width,sizeof(width));
-  myfile.read((char*)&half_height,sizeof(half_height));
-  __int16_t* pixels = (__int16_t*)malloc(half_height * width * sizeof(__int16_t));
-  myfile.read((char*)pixels, half_height * width * sizeof(__int16_t));
+  myfile.read((char*) &width, sizeof(width));
+  myfile.read((char*) &half_height, sizeof(half_height));
+  __int16_t* pixels = (__int16_t*) malloc(half_height * width * sizeof(__int16_t));
+  myfile.read((char*) pixels, half_height * width * sizeof(__int16_t));
 
   assert(myfile.fail() == 0 && "Couldn't read file correctly.");
   myfile.close();
   return pixels;
 }
 
-void printimage(const char *inputFilename, const char* outputFilename) {
+void printimage(const char* inputFilename, const char* outputFilename) {
   // image_name, max_iter, color may become arguments in the future
-  int maxiter         = 50;
+  int maxiter = 50;
 
   const double red   = 0.0;
   const double green = 0.7;
@@ -120,22 +120,22 @@ void printimage(const char *inputFilename, const char* outputFilename) {
   const size_t half_size = half_height * width;
   const size_t size      = 2 * half_size;
   maxiter                = 0;
-  for(size_t i=0; i<half_size; ++i) {
+  for (size_t i = 0; i < half_size; ++i) {
     if (pixels[i] > maxiter) {
       maxiter = pixels[i];
     }
   }
 
-  unsigned char* image = (unsigned char*)malloc(size * BYTES_PER_PIXEL);
+  unsigned char* image = (unsigned char*) malloc(size * BYTES_PER_PIXEL);
 
   for (size_t i = 0; i < half_size; ++i) {
-    double intensity          = double(pixels[i]) / maxiter * 255;
-    unsigned char pixel_red   = std::round(red * intensity);    // red
-    unsigned char pixel_blue  = std::round(blue * intensity);   // blue
-    unsigned char pixel_green = std::round(green * intensity);  // green
-    image[i * BYTES_PER_PIXEL + 2]               = pixel_red;
-    image[i * BYTES_PER_PIXEL + 1]               = pixel_green;
-    image[i * BYTES_PER_PIXEL + 0]              = pixel_blue;
+    double intensity               = double(pixels[i]) / maxiter * 255;
+    unsigned char pixel_red        = std::round(red * intensity);    // red
+    unsigned char pixel_blue       = std::round(blue * intensity);   // blue
+    unsigned char pixel_green      = std::round(green * intensity);  // green
+    image[i * BYTES_PER_PIXEL + 2] = pixel_red;
+    image[i * BYTES_PER_PIXEL + 1] = pixel_green;
+    image[i * BYTES_PER_PIXEL + 0] = pixel_blue;
     // abuse invariance under 180 degree rotaion
     image[(size - 1 - i) * BYTES_PER_PIXEL + 2] = pixel_red;
     image[(size - 1 - i) * BYTES_PER_PIXEL + 1] = pixel_green;
