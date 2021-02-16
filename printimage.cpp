@@ -126,24 +126,26 @@ void printimage(const char *inputFilename, const char* outputFilename) {
     }
   }
 
-  unsigned char image[size][BYTES_PER_PIXEL];
+  unsigned char* image = (unsigned char*)malloc(size * BYTES_PER_PIXEL);
 
   for (size_t i = 0; i < half_size; ++i) {
     double intensity          = double(pixels[i]) / maxiter * 255;
     unsigned char pixel_red   = std::round(red * intensity);    // red
     unsigned char pixel_blue  = std::round(blue * intensity);   // blue
     unsigned char pixel_green = std::round(green * intensity);  // green
-    image[i][2]               = pixel_red;
-    image[i][1]               = pixel_green;
-    image[i][0]               = pixel_blue;
+    image[i * BYTES_PER_PIXEL + 2]               = pixel_red;
+    image[i * BYTES_PER_PIXEL + 1]               = pixel_green;
+    image[i * BYTES_PER_PIXEL + 0]              = pixel_blue;
     // abuse invariance under 180 degree rotaion
-    image[size - 1 - i][2] = pixel_red;
-    image[size - 1 - i][1] = pixel_green;
-    image[size - 1 - i][0] = pixel_blue;
+    image[(size - 1 - i) * BYTES_PER_PIXEL + 2] = pixel_red;
+    image[(size - 1 - i) * BYTES_PER_PIXEL + 1] = pixel_green;
+    image[(size - 1 - i) * BYTES_PER_PIXEL + 0] = pixel_blue;
   }
 
   free(pixels);
 
   generateBitmapImage((unsigned char*) image, 2 * half_height, width, outputFilename);
+
+  free(image);
   std::cout << "maximum Iterations: " << maxiter << std::endl;
 }
