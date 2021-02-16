@@ -10,13 +10,12 @@
 #include "printimage.hpp"
 
 std::complex<double> function(std::complex<double>& z) {
-  return z * z - std::complex<double>(-0.6, 0.6);
+  return z * z - std::complex<double>(-0.2, 0.6);
 }
 
 // calculate just half of the pixels due to symmetrie
-void julia_fatou(const char* filename, const double step = 0.005) {
+void julia_fatou(const char* filename, const double step = 0.005, const size_t max_iter = 255) {
   const std::complex<double> start(-1.75, -1.75);
-  const size_t max_iter   = 70;
   const double norm_limit = 4;
 
   const size_t width       = std::abs(double(start.real() * 2 / step));
@@ -30,7 +29,7 @@ void julia_fatou(const char* filename, const double step = 0.005) {
       do {
         z = function(z);
         ++counter;
-      } while (std::abs(z) < norm_limit && counter <= (__int16_t) max_iter);
+      } while (std::abs(z) < norm_limit && counter < (__int16_t) max_iter);
       pixels[j + i * width] = counter;
     }
   }
@@ -48,19 +47,24 @@ void julia_fatou(const char* filename, const double step = 0.005) {
 int main(int argc, char** argv) {
   if (std::strcmp(argv[1], "julia") == 0) {
     const char* filename = argv[2];
-    if (argc == 4) {
-      julia_fatou(filename, std::stod(argv[3]));
-    }
-    else {
+    if (argc == 3) {
       julia_fatou(filename);
+    }
+    else if (argc == 5) {
+      julia_fatou(filename, std::stod(argv[3]), std::stod(argv[4]));
     }
   }
   else if (std::strcmp(argv[1], "print") == 0) {
     const char* inputFilename  = argv[2];
     const char* outputFilename = argv[3];
-    printimage(inputFilename, outputFilename);
+    if (argc == 4) {
+      printimage(inputFilename, outputFilename);
+    }
+    else if (argc == 7) {
+      printimage(
+        inputFilename, outputFilename, std::stod(argv[4]), std::stod(argv[5]), std::stod(argv[6]));
+    }
   }
-
   std::cout << "Successfully done!" << std::endl;
   return 0;
 }

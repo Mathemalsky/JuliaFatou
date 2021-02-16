@@ -106,20 +106,15 @@ __int16_t* readimage(size_t& half_height, size_t& width, const char* filename) {
   return pixels;
 }
 
-void printimage(const char* inputFilename, const char* outputFilename) {
-  // image_name, max_iter, color may become arguments in the future
-  int maxiter = 50;
-
-  const double red   = 0.0;
-  const double green = 0.7;
-  const double blue  = 0.8;
-
+void printimage(
+  const char* inputFilename, const char* outputFilename, const double red, const double green,
+  const double blue) {
   size_t half_height, width;
   int16_t* pixels = readimage(half_height, width, inputFilename);
 
   const size_t half_size = half_height * width;
   const size_t size      = 2 * half_size;
-  maxiter                = 0;
+  int maxiter            = 0;
   for (size_t i = 0; i < half_size; ++i) {
     if (pixels[i] > maxiter) {
       maxiter = pixels[i];
