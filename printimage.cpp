@@ -110,8 +110,8 @@ void printimage(const char *inputFilename, const char* outputFilename) {
   // image_name, max_iter, color may become arguments in the future
   int maxiter         = 50;
 
-  const double red   = 0.8;
-  const double green = 0;
+  const double red   = 0.0;
+  const double green = 0.7;
   const double blue  = 0.8;
 
   size_t half_height, width;
