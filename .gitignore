@@ -35,3 +35,6 @@ cachegrind.out.*
 
 # no txt files
 *.txt
+
+# exception for CMakeLists.txt
+!CMakeLists.txt
