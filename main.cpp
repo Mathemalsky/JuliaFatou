@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
       julia_fatou(filename);
     }
     else if (argc == 5) {
-      julia_fatou(filename, std::stod(argv[3]), std::stod(argv[4]));
+      julia_fatou(filename, std::stod(argv[3]), std::stoi(argv[4]));
     }
   }
   else if (std::strcmp(argv[1], "print") == 0) {
