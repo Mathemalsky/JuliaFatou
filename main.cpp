@@ -65,6 +65,11 @@ int main(int argc, char** argv) {
         inputFilename, outputFilename, std::stod(argv[4]), std::stod(argv[5]), std::stod(argv[6]));
     }
   }
+  else if (std::strcmp(argv[1], "help") == 0) {
+    std::cout<<"Syntax help\n===========\n";
+    std::cout<<"./JuliaFatou julia <outputfilename> <stepsize> <maximum iteration>\n";
+    std::cout<<"./JuliaFatou print <inputfilename> <outputfilename> <red> <green> <blue>\n";
+  }
   std::cout << "Successfully done!" << std::endl;
   return 0;
 }
