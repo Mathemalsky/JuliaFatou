@@ -7,6 +7,8 @@
 #include <iostream>
 #include <vector>
 
+// oriented by https://stackoverflow.com/questions/2654480/writing-bmp-image-in-pure-c-c-without-other-libraries
+
 const size_t BYTES_PER_PIXEL  = 3;  /// red, green, & blue
 const size_t FILE_HEADER_SIZE = 14;
 const size_t INFO_HEADER_SIZE = 40;
