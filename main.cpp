@@ -9,7 +9,7 @@
 
 #include "printimage.hpp"
 
-std::complex<double> function(std::complex<double>& z) {
+std::complex<double> function(const std::complex<double>& z) {
   return z * z - std::complex<double>(-0.2, 0.6);
 }
 
@@ -66,9 +66,10 @@ int main(int argc, char** argv) {
     }
   }
   else if (std::strcmp(argv[1], "help") == 0) {
-    std::cout<<"Syntax help\n===========\n";
-    std::cout<<"./JuliaFatou julia <outputfilename> <stepsize> <maximum iteration>\n";
-    std::cout<<"./JuliaFatou print <inputfilename> <outputfilename> <red> <green> <blue>\n";
+    std::cout << "Syntax help\n===========\n";
+    std::cout << "./JuliaFatou julia <outputfilename> <stepsize> <maximum iteration>\n";
+    std::cout << "./JuliaFatou print <inputfilename> <outputfilename> <red> <green> <blue>\n";
+    std::cout << "                   <red>, <green>, <blue> in [0,1]\n";
   }
   std::cout << "Successfully done!" << std::endl;
   return 0;
