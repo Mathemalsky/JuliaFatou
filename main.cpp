@@ -5,8 +5,8 @@
 #include <cmath>
 #include <cstddef>
 #include <cstring>
-#include <vector>
 
+#include "calculate.hpp"
 #include "printimage.hpp"
 
 std::complex<double> function(const std::complex<double>& z) {
@@ -48,10 +48,10 @@ int main(int argc, char** argv) {
   if (std::strcmp(argv[1], "julia") == 0) {
     const char* filename = argv[2];
     if (argc == 3) {
-      julia_fatou(filename);
+      julia_fatouCUDA(filename);
     }
     else if (argc == 5) {
-      julia_fatou(filename, std::stod(argv[3]), std::stoi(argv[4]));
+      julia_fatouCUDA(filename, std::stod(argv[3]), std::stoi(argv[4]));
     }
   }
   else if (std::strcmp(argv[1], "print") == 0) {
