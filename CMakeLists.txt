@@ -11,16 +11,17 @@ set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --compiler-options -O2 -g")
 #find_package(CUDAToolkit 11.3 REQUIRED)
 
 # specify where the output should be compiled
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
 
-set(SOURCES
-        main.cpp
-        printimage.cpp
-        calculate.cu
-    )
-set(HEADERS
-        calculate.hpp
-        printimage.hpp
-    )
+
+# lists all sourcefiles to be compiled with the project
+file(GLOB SOURCES "src/*.cpp" "src/*.cu")
+
+#lists all header files to be included in the project
+file(GLOB HEADERS "include/*.hpp")
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+
+target_include_directories(${PROJECT_NAME} PUBLIC include)

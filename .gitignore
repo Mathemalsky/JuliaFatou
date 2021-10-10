@@ -1,9 +1,15 @@
-# no bin or build folders
+# no bin or build folders or files
 bin/
 Linux*/
 build*/
 debug/
 release/
+CMakeFiles/
+
+.cmake/*
+Makefile
+*.cbp
+*.cmake
 
 # no documentation
 doc/
@@ -32,6 +38,7 @@ cachegrind.out.*
 
 # no build artifacts from IDEs
 *.user
+
 
 # no txt files
 *.txt
