@@ -7,7 +7,10 @@
 
 #include <cuda.h>
 
-#include <iostream>
+const size_t BLOCKSIZE  = 256;
+const double START_RE   = -1.75f;
+const double START_IM   = -1.75f;
+const double NORM_LIMIT = 4;
 
 struct Complex {
   double p_re, p_im;
@@ -28,37 +31,39 @@ __device__ static Complex function(const Complex& z) {
   return z * z + Complex(0.2, -0.6);
 }
 
-__global__ void calculatePixelsGPU(__int16_t* pixels, const double step, const size_t max_iter) {
-  int i            = blockIdx.x;
-  int j            = blockIdx.y;
-  size_t iteration = 0;
-  Complex z        = Complex(-1.75f + i * step, -1.75f + j * step);
-  do {
-    z = function(z);
-    ++iteration;
-  } while (iteration < max_iter && z.squaredAbs() < 4);
-  pixels[gridDim.x * j + i] = iteration;
+__global__ void calculatePixelsGPU(
+  __int16_t* pixels, const size_t imageSize, const size_t width, const double step,
+  const size_t max_iter) {
+  int id = blockIdx.x * blockDim.x + threadIdx.x;
+  if (id < imageSize) {
+    int idx             = id % width;
+    int idy             = id / width;
+    __int16_t iteration = 0;
+    Complex z           = Complex(START_RE + idx * step, START_IM + idy * step);
+    do {
+      z = function(z);
+      ++iteration;
+    } while (iteration < max_iter && z.squaredAbs() < NORM_LIMIT);
+    pixels[width * idy + idx] = iteration;
+  }
 }
 
 // calculate just half of the pixels due to symmetrie
 void julia_fatouCUDA(const char* filename, const double step, const size_t max_iter) {
-  const double start_re = -1.75f;
-  const double start_im = -1.75f;
-  // const double norm_limit = 4;
-
-  const size_t width       = std::abs(double(start_re * 2 / step));
-  const size_t half_height = std::abs(double(start_im / step));
+  const size_t width       = std::abs(double(START_RE * 2 / step));
+  const size_t half_height = std::abs(double(START_IM / step));
   const size_t imageSize   = half_height * width;
   //__int16_t* pixels        = (__int16_t*) malloc(imageSize * sizeof(__int16_t));
   __int16_t* pixels;
   cudaHostAlloc((void**) &pixels, imageSize * sizeof(__int16_t), 0);
 
-  dim3 grid(width, half_height);
+  dim3 blockDim(BLOCKSIZE);
+  dim3 gridDim(std::ceil(imageSize / (float) BLOCKSIZE));
 
   __int16_t* cudaPixels;
   cudaMalloc((void**) &cudaPixels, imageSize * sizeof(__int16_t));
 
-  calculatePixelsGPU<<<grid, 1>>>(cudaPixels, step, max_iter);
+  calculatePixelsGPU<<<gridDim, blockDim>>>(cudaPixels, imageSize, width, step, max_iter);
 
   cudaMemcpy(pixels, cudaPixels, imageSize * sizeof(__int16_t), cudaMemcpyDeviceToHost);
 
@@ -73,6 +78,5 @@ void julia_fatouCUDA(const char* filename, const double step, const size_t max_i
   assert(myfile.fail() == 0 && "Could not write correctly!");
   myfile.close();
 
-  // free(pixels);
   cudaFreeHost(pixels);
 }
