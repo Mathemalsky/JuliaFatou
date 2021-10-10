@@ -8,8 +8,6 @@ set(CMAKE_CUDA_COMPILER nvcc)
 set(CXXFLAGS= "-c++17 -g -pedantic -Wall -Wextra")
 set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --compiler-options -O2 -g")
 
-#find_package(CUDAToolkit 11.3 REQUIRED)
-
 # specify where the output should be compiled
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/)
@@ -25,3 +23,9 @@ file(GLOB HEADERS "include/*.hpp")
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
+
+find_package(PNGwriter 0.7.0)
+
+if(PNGwriter_FOUND)
+  target_link_libraries(${PROJECT_NAME} PRIVATE PNGwriter::PNGwriter)
+endif(PNGwriter_FOUND)
