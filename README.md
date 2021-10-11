@@ -1,6 +1,9 @@
 # JuliaFatou
 
-This porjects aims to compute the julia set and the fatou set for graphical output on GPU.
+This porjects aim is to compute the julia set and the fatou set for graphical output on GPU.
 
-## Required libraries
+## Requirements
+- cuda compatible GPU and appropriate cuda compiler
+
+### Libraries
 - PNGwriter https://github.com/pngwriter/pngwriter
