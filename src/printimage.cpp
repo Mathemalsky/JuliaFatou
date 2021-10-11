@@ -9,7 +9,7 @@
 #include <pngwriter.h>
 
 // read the input data
-__int16_t* readimage(size_t& half_height, size_t& width, const char* filename) {
+static __int16_t* readimage(size_t& half_height, size_t& width, const char* filename) {
   std::ifstream myfile(filename, std::ios::binary);
 
   myfile.read((char*) &width, sizeof(width));
@@ -42,14 +42,14 @@ void printimage(
   for (size_t i = 0; i < half_size; ++i) {
     double intensity = double(pixels[i]) / maxiter;
 
-    const double pixel_red   = std::round(red * intensity);    // red
-    const double pixel_blue  = std::round(blue * intensity);   // blue
-    const double pixel_green = std::round(green * intensity);  // green
+    const double pixel_red   = red * intensity;    // red
+    const double pixel_blue  = blue * intensity;   // blue
+    const double pixel_green = green * intensity;  // green
 
-    unsigned int x = i % width;
-    unsigned int y = i / width;
+    unsigned int x = i % width + 1;
+    unsigned int y = i / width + 1;
     png.plot(x, y, pixel_red, pixel_green, pixel_blue);
-    png.plot(width - 1 - x, height - 1 - y, pixel_red, pixel_green, pixel_blue);
+    png.plot(width - x, height - y, pixel_red, pixel_green, pixel_blue);
   }
   png.close();
 

@@ -31,7 +31,7 @@ __device__ static Complex function(const Complex& z) {
   return z * z + Complex(0.2, -0.6);
 }
 
-__global__ void calculatePixelsGPU(
+__global__ static void calculatePixelsGPU(
   __int16_t* pixels, const size_t imageSize, const size_t width, const double step,
   const size_t max_iter) {
   int id = blockIdx.x * blockDim.x + threadIdx.x;
