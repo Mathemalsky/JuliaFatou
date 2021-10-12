@@ -10,7 +10,8 @@
 const size_t BLOCKSIZE  = 256;
 const double START_RE   = -1.75f;
 const double START_IM   = -1.75f;
-const double NORM_LIMIT = 4;
+const double NORM_LIMIT = 1000;
+const double LOWERBOUND = 0.0000001;
 
 struct Complex {
   double p_re, p_im;
@@ -28,7 +29,7 @@ struct Complex {
 };
 
 __device__ static Complex function(const Complex& z) {
-  return z * z + Complex(0.2, -0.6);
+  return z * z + Complex(-0.78, -0.18);
 }
 
 __global__ static void calculatePixelsGPU(
@@ -43,8 +44,13 @@ __global__ static void calculatePixelsGPU(
     do {
       z = function(z);
       ++iteration;
-    } while (iteration < max_iter && z.squaredAbs() < NORM_LIMIT);
-    pixels[width * idy + idx] = iteration;
+    } while (iteration < max_iter && z.squaredAbs() < NORM_LIMIT && z.squaredAbs() > LOWERBOUND);
+    if (z.squaredAbs() < 1) {
+      pixels[width * idy + idx] = -iteration;
+    }
+    else {
+      pixels[width * idy + idx] = iteration;
+    }
   }
 }
 
@@ -53,7 +59,7 @@ void julia_fatouCUDA(const char* filename, const double step, const size_t max_i
   const size_t width       = std::abs(double(START_RE * 2 / step));
   const size_t half_height = std::abs(double(START_IM / step));
   const size_t imageSize   = half_height * width;
-  //__int16_t* pixels        = (__int16_t*) malloc(imageSize * sizeof(__int16_t));
+
   __int16_t* pixels;
   cudaHostAlloc((void**) &pixels, imageSize * sizeof(__int16_t), 0);
 

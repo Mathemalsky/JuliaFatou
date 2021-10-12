@@ -29,7 +29,8 @@ int main(int argc, char** argv) {
     std::cout << "Syntax help\n===========\n";
     std::cout << "./JuliaFatou julia <outputfilename> <stepsize> <maximum iteration>\n";
     std::cout << "./JuliaFatou print <inputfilename> <outputfilename> <red> <green> <blue>\n";
-    std::cout << "                   <red>, <green>, <blue> in [0,1]\n";
+    std::cout << "                   <red>, <green>, <blue> are optional arguments with values "
+                 "from [0,1]\n";
   }
   std::cout << "Successfully done!" << std::endl;
   return 0;

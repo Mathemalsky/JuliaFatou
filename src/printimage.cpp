@@ -40,11 +40,21 @@ void printimage(
   pngwriter png(width, height, 0, outputFilename);
 
   for (size_t i = 0; i < half_size; ++i) {
-    double intensity = double(pixels[i]) / maxiter;
+    const bool convergence = (pixels[i] < 0);
+    double intensity       = std::abs(double(pixels[i])) / maxiter;
 
-    const double pixel_red   = red * intensity;    // red
-    const double pixel_blue  = blue * intensity;   // blue
-    const double pixel_green = green * intensity;  // green
+    double pixel_red, pixel_green, pixel_blue;
+
+    if (convergence) {
+      pixel_red   = (1 - red) * intensity;    // red
+      pixel_green = (1 - green) * intensity;  // green
+      pixel_blue  = (1 - blue) * intensity;   // blue
+    }
+    else {
+      pixel_red   = red * intensity;    // red
+      pixel_blue  = blue * intensity;   // blue
+      pixel_green = green * intensity;  // green
+    }
 
     unsigned int x = i % width + 1;
     unsigned int y = i / width + 1;
