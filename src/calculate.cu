@@ -11,7 +11,6 @@ const size_t BLOCKSIZE  = 256;
 const double START_RE   = -1.75f;
 const double START_IM   = -1.75f;
 const double NORM_LIMIT = 1000;
-const double LOWERBOUND = 0.0000001;
 
 struct Complex {
   double p_re, p_im;
@@ -44,13 +43,8 @@ __global__ static void calculatePixelsGPU(
     do {
       z = function(z);
       ++iteration;
-    } while (iteration < max_iter && z.squaredAbs() < NORM_LIMIT && z.squaredAbs() > LOWERBOUND);
-    if (z.squaredAbs() < 1) {
-      pixels[width * idy + idx] = -iteration;
-    }
-    else {
-      pixels[width * idy + idx] = iteration;
-    }
+    } while (iteration < max_iter && z.squaredAbs() < NORM_LIMIT);
+    pixels[width * idy + idx] = iteration;
   }
 }
 

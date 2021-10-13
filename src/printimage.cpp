@@ -8,6 +8,10 @@
 
 #include <pngwriter.h>
 
+static double modifier(const double x) {
+  return 0.5f + 4 * pow(x - 0.5f, 3);
+}
+
 // read the input data
 static __int16_t* readimage(size_t& half_height, size_t& width, const char* filename) {
   std::ifstream myfile(filename, std::ios::binary);
@@ -24,7 +28,7 @@ static __int16_t* readimage(size_t& half_height, size_t& width, const char* file
 
 void printimage(
   const char* inputFilename, const char* outputFilename, const double red, const double green,
-  const double blue) {
+  const double blue, const double red2, const double green2, const double blue2) {
   size_t half_height, width;
   int16_t* pixels = readimage(half_height, width, inputFilename);
 
@@ -38,26 +42,15 @@ void printimage(
   }
 
   pngwriter png(width, height, 0, outputFilename);
+  png.setcompressionlevel(9);
 
   for (size_t i = 0; i < half_size; ++i) {
-    const bool convergence = (pixels[i] < 0);
-    double intensity       = std::abs(double(pixels[i])) / maxiter;
-
-    double pixel_red, pixel_green, pixel_blue;
-
-    if (convergence) {
-      pixel_red   = (1 - red) * intensity;    // red
-      pixel_green = (1 - green) * intensity;  // green
-      pixel_blue  = (1 - blue) * intensity;   // blue
-    }
-    else {
-      pixel_red   = red * intensity;    // red
-      pixel_blue  = blue * intensity;   // blue
-      pixel_green = green * intensity;  // green
-    }
-
-    unsigned int x = i % width + 1;
-    unsigned int y = i / width + 1;
+    const double intensity   = modifier(double(pixels[i]) / maxiter);
+    const double pixel_red   = red * intensity + red2 * (1 - intensity);      // red
+    const double pixel_green = green * intensity + green2 * (1 - intensity);  // green
+    const double pixel_blue  = blue * intensity + blue2 * (1 - intensity);    // blue
+    unsigned int x           = i % width + 1;
+    unsigned int y           = i / width + 1;
     png.plot(x, y, pixel_red, pixel_green, pixel_blue);
     png.plot(width - x, height - y, pixel_red, pixel_green, pixel_blue);
   }
