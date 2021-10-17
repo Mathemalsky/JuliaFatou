@@ -1,5 +1,7 @@
 set(CMAKE_CUDA_COMPILER nvcc)
 
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --compiler-options -O2 -g")
+
 file(GLOB SOURCES
     "src/*.cpp"
     "src/*.cu")
