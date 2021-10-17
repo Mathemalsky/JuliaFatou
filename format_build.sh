@@ -1,4 +1,4 @@
-clang-format -i src/*.cu src/*.cpp include/*.hpp
+clang-format -i src/*.cpp include/*.hpp lib/*/src/*.cu lib/*/include/*.hpp
 
 cd build
 cmake ..
