@@ -39,6 +39,8 @@ cachegrind.out.*
 # no build artifacts from IDEs
 *.user
 
+# no ini files
+*.ini
 
 # no txt files
 *.txt
