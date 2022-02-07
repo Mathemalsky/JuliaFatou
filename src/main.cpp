@@ -100,9 +100,15 @@ int main(int, char**) {
   if (window == NULL)
     return 1;
   glfwMakeContextCurrent(window);
-  glfwSwapInterval(1);  // Enable vsync
+  glfwSwapInterval(1);  // enable vsync
 
-  // Setup Dear ImGui context
+  // set initial state of the window
+  initWindows();
+
+  glEnable(GL_TEXTURE_2D);
+  glLoadIdentity();
+
+  // setup Dear ImGui
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO();
@@ -118,54 +124,26 @@ int main(int, char**) {
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init(glsl_version);
 
-  // set initial state of the window
-  initWindows();
-  ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-  glEnable(GL_TEXTURE_2D);
-  glLoadIdentity();
-
-  // Main loop
+  // main loop
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
-    // Start the Dear ImGui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    if (settingsWindow::SHOW_SETTINGS_WINDOW) {
-      ImGui::Begin("Settings", &settingsWindow::SHOW_SETTINGS_WINDOW);
-      ImGui::SliderFloat("step size", &functionParameters::STEP, 0.0f, 1.0f);
-      ImGui::Text(
-        "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
-        ImGui::GetIO().Framerate);
-      if (ImGui::Button("Close"))
-        settingsWindow::SHOW_SETTINGS_WINDOW = false;
-      ImGui::End();
-    }
-
-    // Have a look at https://learnopengl.com/Advanced-OpenGL/Framebuffers Renderbuffers
-
-    // Rendering
-    ImGui::Render();
+    // can be replaced by global window variables
     int display_w, display_h;
     glfwGetFramebufferSize(window, &display_w, &display_h);
     glViewport(0, 0, display_w, display_h);
-    glClearColor(
-      clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w,
-      clear_color.w);
-    glClear(GL_COLOR_BUFFER_BIT);
 
-    // drawJuliaFatouImage();
-    testdraw();
+    // draw the julia fatou image
+    drawJuliaFatouImage();
 
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    // draw the imgui over the fatou image
+    drawImgui();
 
+    // swap the drawings to the displayed frame
     glfwSwapBuffers(window);
   }
 
-  // Cleanup
+  // cleanup
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();

@@ -6,6 +6,7 @@ extern float RE_MAX;
 extern float IM_MIN;
 extern float IM_MAX;
 extern float STEP;
+extern int MAX_ITER;
 }  // namespace functionParameters
 
 namespace settingsWindow {
