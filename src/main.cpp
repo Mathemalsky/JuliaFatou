@@ -122,6 +122,9 @@ int main(int, char**) {
   initWindows();
   ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+  glEnable(GL_TEXTURE_2D);
+  glLoadIdentity();
+
   // Main loop
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
@@ -142,6 +145,8 @@ int main(int, char**) {
       ImGui::End();
     }
 
+    // Have a look at https://learnopengl.com/Advanced-OpenGL/Framebuffers Renderbuffers
+
     // Rendering
     ImGui::Render();
     int display_w, display_h;
@@ -152,7 +157,8 @@ int main(int, char**) {
       clear_color.w);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    drawJuliaFatouImage();
+    // drawJuliaFatouImage();
+    testdraw();
 
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
