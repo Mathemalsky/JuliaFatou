@@ -108,6 +108,11 @@ int main(int, char**) {
   // setup Dear ImGui
   setUpImgui(window, glsl_version);
 
+  // allocate memory for the drawing
+  const unsigned int textureSize =
+    universal::RGB_COLORS * mainWindow::INITIAL_WIDTH * mainWindow::INITIAL_HEIGHT;
+  Byte* textureImg = (Byte*) malloc(textureSize);
+
   // main loop
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
@@ -118,7 +123,7 @@ int main(int, char**) {
     glViewport(0, 0, display_w, display_h);
 
     // draw the julia fatou image
-    drawJuliaFatouImage();
+    drawJuliaFatouImage(textureImg);
 
     // draw the imgui over the fatou image
     drawImgui();
@@ -126,6 +131,9 @@ int main(int, char**) {
     // swap the drawings to the displayed frame
     glfwSwapBuffers(window);
   }
+
+  // free the memory for the texture
+  free(textureImg);
 
   // clean up Dear ImGui
   cleanUpImgui();

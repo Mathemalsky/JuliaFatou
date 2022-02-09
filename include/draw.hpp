@@ -1,3 +1,4 @@
 #pragma once
 
-void drawJuliaFatouImage();
+using Byte = unsigned char;
+void drawJuliaFatouImage(Byte* textureImg);

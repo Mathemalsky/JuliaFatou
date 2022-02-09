@@ -10,6 +10,13 @@
 
 void initSettingsWindow() {
   settingsWindow::SHOW_SETTINGS_WINDOW = settingsWindow::INITIAL_SHOW_SETTINGS_WINDOW;
+  functionParameters::RE_START         = functionParameters::INITIAL_RE_START;
+  functionParameters::IM_START         = functionParameters::INITIAL_IM_START;
+  functionParameters::STEP             = functionParameters::INITIAL_STEP;
+  functionParameters::RED              = functionParameters::INITIAL_RED;
+  functionParameters::GREEN            = functionParameters::INITIAL_GREEN;
+  functionParameters::BLUE             = functionParameters::INITIAL_BLUE;
+  functionParameters::MAX_ITER         = functionParameters::INITIAL_MAX_ITER;
 }
 
 void setUpImgui(GLFWwindow* window, const char* glsl_version) {
@@ -38,6 +45,11 @@ void drawImgui() {
     ImGui::Begin("Settings", &settingsWindow::SHOW_SETTINGS_WINDOW);
     ImGui::SliderFloat("step size", &functionParameters::STEP, 0.0f, 1.0f);
     ImGui::SliderInt("max. iterations", &functionParameters::MAX_ITER, 0, 255);
+    ImGui::SliderFloat("Red", &functionParameters::RED, 0.0f, 1.0f);
+    ImGui::SliderFloat("Green", &functionParameters::GREEN, 0.0f, 1.0f);
+    ImGui::SliderFloat("Blue", &functionParameters::BLUE, 0.0f, 1.0f);
+    ImGui::Text("RE_START: %.3f", functionParameters::RE_START);
+    ImGui::Text("IM_START: %.3f", functionParameters::IM_START);
     ImGui::Text(
       "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
       ImGui::GetIO().Framerate);
