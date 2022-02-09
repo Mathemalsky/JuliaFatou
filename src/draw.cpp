@@ -3,10 +3,6 @@
 #include <cmath>
 #include <cstdlib>
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 #include <GLFW/glfw3.h>
 
 #include "constants.hpp"
@@ -62,25 +58,4 @@ void drawJuliaFatouImage() {
 
   // IMPROVEMENT: MOVE FREE OUT OF THE LOOP
   free(textureImg);
-}
-
-void drawImgui() {
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-
-  if (settingsWindow::SHOW_SETTINGS_WINDOW) {
-    ImGui::Begin("Settings", &settingsWindow::SHOW_SETTINGS_WINDOW);
-    ImGui::SliderFloat("step size", &functionParameters::STEP, 0.0f, 1.0f);
-    ImGui::SliderInt("max. iterations", &functionParameters::MAX_ITER, 0, 255);
-    ImGui::Text(
-      "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
-      ImGui::GetIO().Framerate);
-    if (ImGui::Button("Close"))
-      settingsWindow::SHOW_SETTINGS_WINDOW = false;
-    ImGui::End();
-  }
-
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

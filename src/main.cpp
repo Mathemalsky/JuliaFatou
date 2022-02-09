@@ -2,10 +2,6 @@
 #include <iostream>
 #include <stdio.h>
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
 #endif
@@ -94,7 +90,7 @@ int main(int, char**) {
   // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 
-  // Create window with graphics context
+  // create window in specified size
   GLFWwindow* window = glfwCreateWindow(
     mainWindow::INITIAL_WIDTH, mainWindow::INITIAL_HEIGHT, mainWindow::NAME, NULL, NULL);
   if (window == NULL)
@@ -102,27 +98,15 @@ int main(int, char**) {
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);  // enable vsync
 
-  // set initial state of the window
-  initWindows();
-
+  // enable the texture which will be drawn
   glEnable(GL_TEXTURE_2D);
   glLoadIdentity();
 
+  // set initial state of the settings window
+  initSettingsWindow();
+
   // setup Dear ImGui
-  IMGUI_CHECKVERSION();
-  ImGui::CreateContext();
-  ImGuiIO& io = ImGui::GetIO();
-  (void) io;
-  // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-  // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-  // Setup Dear ImGui style
-  ImGui::StyleColorsDark();
-  // ImGui::StyleColorsClassic();
-
-  // Setup Platform/Renderer backends
-  ImGui_ImplGlfw_InitForOpenGL(window, true);
-  ImGui_ImplOpenGL3_Init(glsl_version);
+  setUpImgui(window, glsl_version);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
@@ -143,11 +127,10 @@ int main(int, char**) {
     glfwSwapBuffers(window);
   }
 
-  // cleanup
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
+  // clean up Dear ImGui
+  cleanUpImgui();
 
+  // clean up glfw window
   glfwDestroyWindow(window);
   glfwTerminate();
 
