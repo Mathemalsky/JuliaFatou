@@ -1,5 +1,7 @@
 #include "variables.hpp"
 
+#include "constants.hpp"
+
 namespace functionParameters {
 float RE_START;
 float RE_MAX;
@@ -20,4 +22,9 @@ namespace mainWindow {
 unsigned int WIDTH;
 unsigned int HEIGHT;
 unsigned int TextureSize;
+
+void initMainWindow() {
+  WIDTH  = INITIAL_WIDTH;
+  HEIGHT = INITIAL_HEIGHT;
+}
 }  // namespace mainWindow

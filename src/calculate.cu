@@ -10,6 +10,8 @@
 #include "constants.hpp"
 #include "variables.hpp"
 
+#include <iostream>
+
 const size_t BLOCKSIZE = 256;
 // const double START_RE   = -1.75f;
 // const double START_IM   = -1.75f;
@@ -117,8 +119,8 @@ void juliaFatouCUDA(Byte* textureImg) {
   const unsigned int imageSize = mainWindow::WIDTH * mainWindow::HEIGHT;
 
   // set up grid
-  dim3 blockDim(BLOCKSIZE);
-  dim3 gridDim(std::ceil(imageSize / (float) BLOCKSIZE));
+  dim3 blockDim(BLOCKSIZE, 1, 1);
+  dim3 gridDim(std::ceil(imageSize / (float) BLOCKSIZE), 1, 1);
 
   // allocate GPU memory
   Byte* cudaPixels;
@@ -134,13 +136,8 @@ void juliaFatouCUDA(Byte* textureImg) {
   // free the allocated memory on GPU
   cudaFree(cudaPixels);
 
-  // print status cuda message
-  printf("%s\n", cudaGetErrorString(cudaGetLastError()));
-
-  /*
   // DEBUG
-  for(unsigned int i =0; i<imageSize * universal::RGB_COLORS; ++i) {
-    textureImg[i] = 0.3;
+  for (unsigned int i = 0; i < imageSize * universal::RGB_COLORS; ++i) {
+    textureImg[i] = 255;
   }
-  */
 }

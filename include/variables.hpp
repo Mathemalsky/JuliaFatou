@@ -19,4 +19,5 @@ extern bool SHOW_SETTINGS_WINDOW;
 namespace mainWindow {
 extern unsigned int WIDTH;
 extern unsigned int HEIGHT;
+void initMainWindow();
 }  // namespace mainWindow

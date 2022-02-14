@@ -5,6 +5,8 @@
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
 #endif
+#include <glad/glad.h>
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 #include "calculate.hpp"
@@ -85,9 +87,11 @@ int main(int, char**) {
   // GL 3.0 + GLSL 130
   const char* glsl_version = "#version 130";
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-  // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-  // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  glfwWindowHint(
+    GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);  // 3.2+ only
+                                                       // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,
+                                                       // GL_TRUE);            // 3.0+ only
 #endif
 
   // create window in specified size
@@ -96,14 +100,20 @@ int main(int, char**) {
   if (window == NULL)
     return 1;
   glfwMakeContextCurrent(window);
+  gladLoadGL();
   glfwSwapInterval(1);  // enable vsync
 
   // enable the texture which will be drawn
   glEnable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE0);
+  glMatrixMode(GL_PROJECTION);
+  glOrtho(0, 0, -1.f, 1.f, 1.f, -1.f);
+  glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
   // set initial state of the settings window
   initSettingsWindow();
+  mainWindow::initMainWindow();
 
   // setup Dear ImGui
   setUpImgui(window, glsl_version);
@@ -112,6 +122,17 @@ int main(int, char**) {
   const unsigned int textureSize =
     universal::RGB_COLORS * mainWindow::INITIAL_WIDTH * mainWindow::INITIAL_HEIGHT;
   Byte* textureImg = (Byte*) malloc(textureSize);
+
+  // get an ID for the texture
+  GLuint textureID;
+  glGenTextures(1, &textureID);
+  glBindTexture(GL_TEXTURE_2D, textureID);
+  glTexImage2D(
+    GL_TEXTURE_2D, 0, GL_RGB, mainWindow::INITIAL_WIDTH, mainWindow::INITIAL_HEIGHT, 0, GL_RGB,
+    GL_UNSIGNED_BYTE, textureImg);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
