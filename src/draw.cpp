@@ -14,6 +14,7 @@ void drawJuliaFatouImage(Byte* textureImg, void* cudaPixels) {
   // bringing the data from the GPU to the texture
   juliaFatouCUDA(textureImg, cudaPixels);
 
+  // bringing the data from the texture back to GPU
   glTexSubImage2D(
     GL_TEXTURE_2D, 0, 0, 0, mainWindow::INITIAL_WIDTH, mainWindow::INITIAL_HEIGHT, GL_RGB,
     GL_UNSIGNED_BYTE, textureImg);
