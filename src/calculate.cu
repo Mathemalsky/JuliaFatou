@@ -107,37 +107,37 @@ __global__ static void calculatePixelsGPU(
     } while (iteration < max_iter && z.squaredAbs() < NORM_LIMIT);
 
     // calculate colors and write
-    cudaPixels[3 * (width * idy + idx)]     = std::round(red * iteration);
-    cudaPixels[3 * (width * idy + idx) + 1] = std::round(green * iteration);
-    cudaPixels[3 * (width * idy + idx) + 2] = std::round(blue * iteration);
+    cudaPixels[3 * (width * idy + idx)]     = std::round((red * iteration * 255) / max_iter);
+    cudaPixels[3 * (width * idy + idx) + 1] = std::round((green * iteration * 255) / max_iter);
+    cudaPixels[3 * (width * idy + idx) + 2] = std::round((blue * iteration * 255) / max_iter);
   }
 }
 
 using namespace functionParameters;
 // do calculation adjusted to the the displaying
-void juliaFatouCUDA(Byte* textureImg) {
+void juliaFatouCUDA(Byte* textureImg, void* cudaPixels) {
   const unsigned int imageSize = mainWindow::WIDTH * mainWindow::HEIGHT;
 
   // set up grid
   dim3 blockDim(BLOCKSIZE, 1, 1);
   dim3 gridDim(std::ceil(imageSize / (float) BLOCKSIZE), 1, 1);
 
-  // allocate GPU memory
-  Byte* cudaPixels;
-  cudaMalloc((void**) &cudaPixels, imageSize * universal::RGB_COLORS);
-
   // do computation
   calculatePixelsGPU<<<gridDim, blockDim>>>(
-    cudaPixels, imageSize, mainWindow::WIDTH, STEP, MAX_ITER, RE_START, IM_START, RED, GREEN, BLUE);
+    (Byte*) cudaPixels, imageSize, mainWindow::WIDTH, STEP, MAX_ITER, RE_START, IM_START, RED,
+    GREEN, BLUE);
 
   // copy memory from GRAM to RAM
   cudaMemcpy(textureImg, cudaPixels, imageSize * universal::RGB_COLORS, cudaMemcpyDeviceToHost);
+}
 
-  // free the allocated memory on GPU
+void* allocateGraphicsMemory() {
+  void* cudaPixels;
+  const unsigned int imageSize = mainWindow::WIDTH * mainWindow::HEIGHT;
+  cudaMalloc((void**) &cudaPixels, imageSize * universal::RGB_COLORS);
+  return cudaPixels;
+}
+
+void freeGraphicsMemory(void* cudaPixels) {
   cudaFree(cudaPixels);
-
-  // DEBUG
-  for (unsigned int i = 0; i < imageSize * universal::RGB_COLORS; ++i) {
-    textureImg[i] = 255;
-  }
 }

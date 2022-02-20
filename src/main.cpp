@@ -122,6 +122,7 @@ int main(int, char**) {
   const unsigned int textureSize =
     universal::RGB_COLORS * mainWindow::INITIAL_WIDTH * mainWindow::INITIAL_HEIGHT;
   Byte* textureImg = (Byte*) malloc(textureSize);
+  void* cudaPixels = allocateGraphicsMemory();
 
   // get an ID for the texture
   GLuint textureID;
@@ -134,17 +135,17 @@ int main(int, char**) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+  // can be replaced by global window variables
+  int display_w, display_h;
+  glfwGetFramebufferSize(window, &display_w, &display_h);
+  glViewport(0, 0, display_w, display_h);
+
   // main loop
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
 
-    // can be replaced by global window variables
-    int display_w, display_h;
-    glfwGetFramebufferSize(window, &display_w, &display_h);
-    glViewport(0, 0, display_w, display_h);
-
     // draw the julia fatou image
-    drawJuliaFatouImage(textureImg);
+    drawJuliaFatouImage(textureImg, cudaPixels);
 
     // draw the imgui over the fatou image
     drawImgui();
@@ -155,6 +156,7 @@ int main(int, char**) {
 
   // free the memory for the texture
   free(textureImg);
+  freeGraphicsMemory(cudaPixels);
 
   // clean up Dear ImGui
   cleanUpImgui();
