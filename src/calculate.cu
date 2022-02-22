@@ -3,14 +3,14 @@
 #include <cassert>
 #include <cmath>
 #include <fstream>
-#include <stdint.h>
+#include <cstdint>
 
 #include <cuda.h>
 
-const size_t BLOCKSIZE  = 256;
-const double START_RE   = -1.75f;
-const double START_IM   = -1.75f;
-const double NORM_LIMIT = 1000;
+#include "constants.hpp"
+#include "variables.hpp"
+
+#include <iostream>
 
 struct Complex {
   double p_re, p_im;
@@ -31,52 +31,82 @@ __device__ static Complex function(const Complex& z) {
   return z * z + Complex(-0.78, -0.18);
 }
 
+// iterate the function and calculate the color
 __global__ static void calculatePixelsGPU(
-  __int16_t* pixels, const size_t imageSize, const size_t width, const double step,
-  const size_t max_iter) {
+  Byte* cudaPixels, const unsigned int imageSize, const unsigned int width, const float step,
+  const unsigned int max_iter, const float startRe, const float startIm, const float red, const float green,
+  const float blue) {
   int id = blockIdx.x * blockDim.x + threadIdx.x;
   if (id < imageSize) {
     int idx             = id % width;
     int idy             = id / width;
     __int16_t iteration = 0;
-    Complex z           = Complex(START_RE + idx * step, START_IM + idy * step);
+    Complex z           = Complex(startRe + idx * step, startIm + idy * step);
     do {
       z = function(z);
       ++iteration;
-    } while (iteration < max_iter && z.squaredAbs() < NORM_LIMIT);
-    pixels[width * idy + idx] = iteration;
+    } while (iteration < max_iter && z.squaredAbs() < functionParameters::NORM_LIMIT);
+
+    // calculate colors and write
+    cudaPixels[3 * (width * idy + idx)]     = std::round((red * iteration * universal::MAX_BYTE) / max_iter);
+    cudaPixels[3 * (width * idy + idx) + 1] = std::round((green * iteration * universal::MAX_BYTE) / max_iter);
+    cudaPixels[3 * (width * idy + idx) + 2] = std::round((blue * iteration * universal::MAX_BYTE) / max_iter);
   }
 }
 
-// calculate just half of the pixels due to symmetrie
-void julia_fatouCUDA(const char* filename, const double step, const size_t max_iter) {
-  const size_t width       = std::abs(double(START_RE * 2 / step));
-  const size_t half_height = std::abs(double(START_IM / step));
-  const size_t imageSize   = half_height * width;
+void* allocateGraphicsMemory() {
+  void* cudaPixels;
+  const unsigned int imageSize = mainWindow::WIDTH * mainWindow::HEIGHT;
+  cudaMalloc((void**) &cudaPixels, imageSize * universal::RGB_COLORS);
+  return cudaPixels;
+}
 
-  __int16_t* pixels;
-  cudaHostAlloc((void**) &pixels, imageSize * sizeof(__int16_t), 0);
+void freeGraphicsMemory(void* cudaPixels) {
+  cudaFree(cudaPixels);
+}
 
-  dim3 blockDim(BLOCKSIZE);
-  dim3 gridDim(std::ceil(imageSize / (float) BLOCKSIZE));
+using namespace functionParameters;
+// do calculation adjusted to the the displaying
+void juliaFatouCUDA(Byte* textureImg, void* cudaPixels) {
+  const unsigned int imageSize = mainWindow::WIDTH * mainWindow::HEIGHT;
 
-  __int16_t* cudaPixels;
-  cudaMalloc((void**) &cudaPixels, imageSize * sizeof(__int16_t));
+  // set up grid
+  dim3 blockDim(settingsGPU::BLOCKSIZE, 1, 1);
+  dim3 gridDim(std::ceil(imageSize / (float) settingsGPU::BLOCKSIZE), 1, 1);
 
-  calculatePixelsGPU<<<gridDim, blockDim>>>(cudaPixels, imageSize, width, step, max_iter);
+  // do computation
+  calculatePixelsGPU<<<gridDim, blockDim>>>(
+    (Byte*) cudaPixels, imageSize, mainWindow::WIDTH, STEP, MAX_ITER, RE_START, IM_START, RED, GREEN, BLUE);
 
-  cudaMemcpy(pixels, cudaPixels, imageSize * sizeof(__int16_t), cudaMemcpyDeviceToHost);
+  // copy memory from GRAM to RAM
+  cudaMemcpy(textureImg, cudaPixels, imageSize * universal::RGB_COLORS, cudaMemcpyDeviceToHost);
+}
+
+void singleBigFrame(Byte* pixels) {
+  const unsigned int size = SCREENSHOT_WIDTH * SCREENSHOT_HEIGHT;
+
+  // compute different start end end for picture
+  const double step =
+    STEP * std::max((double) mainWindow::WIDTH / SCREENSHOT_WIDTH, (double) mainWindow::HEIGHT / SCREENSHOT_HEIGHT);
+  const double reStart = RE_START + STEP * mainWindow::WIDTH / 2.0 - step * SCREENSHOT_WIDTH / 2.0;
+  const double imStart = IM_START + STEP * mainWindow::HEIGHT / 2.0 - step * SCREENSHOT_HEIGHT / 2.0;
+
+  // set up grid
+  dim3 blockDim(settingsGPU::BLOCKSIZE, 1, 1);
+  dim3 gridDim(std::ceil(size / (float) settingsGPU::BLOCKSIZE), 1, 1);
+
+  // allocate graphics memory
+  Byte* cudaPixels;
+  cudaMalloc((void**) &cudaPixels, size * universal::RGB_COLORS * sizeof(Byte));
+
+  // compute image for the screenshot
+  calculatePixelsGPU<<<gridDim, blockDim>>>(
+    cudaPixels, size, SCREENSHOT_WIDTH, step, MAX_ITER, reStart, imStart, RED, GREEN, BLUE);
+
+  cudaMemcpy(pixels, cudaPixels, size * universal::RGB_COLORS, cudaMemcpyDeviceToHost);
+
+  // keep track of errors in cuda functions
+  assert(cudaGetErrorString(cudaGetLastError()) == "no error");
 
   cudaFree(cudaPixels);
-
-  printf("%s\n", cudaGetErrorString(cudaGetLastError()));
-
-  std::ofstream myfile(filename, std::ios::binary);
-  myfile.write((char*) &width, sizeof(width));
-  myfile.write((char*) &half_height, sizeof(half_height));
-  myfile.write((char*) pixels, imageSize * sizeof(__int16_t));
-  assert(myfile.fail() == 0 && "Could not write correctly!");
-  myfile.close();
-
-  cudaFreeHost(pixels);
 }

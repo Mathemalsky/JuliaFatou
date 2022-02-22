@@ -1,5 +1,8 @@
 #pragma once
 
-#include <cstddef>
+#include "types.hpp"
 
-void julia_fatouCUDA(const char* filename, const double step = 0.005, const size_t max_iter = 255);
+void* allocateGraphicsMemory();
+void freeGraphicsMemory(void* cudaPixels);
+void juliaFatouCUDA(Byte* textureImg, void* cudaPixels);
+void singleBigFrame(Byte* pixels);

@@ -1,61 +1,61 @@
 #include "printimage.hpp"
 
-#include <cassert>
 #include <cmath>
-#include <cstdio>
-#include <fstream>
-#include <iostream>
+#include <string>
+
+#include "calculate.hpp"
+#include "constants.hpp"
+#include "variables.hpp"
 
 #include <pngwriter.h>
 
-static double modifier(const double x) {
-  return 0.5f + 4 * pow(x - 0.5f, 3);
+static inline Byte doubleToByte(const double a) {
+  return std::round(a * universal::MAX_BYTE);
 }
 
-// read the input data
-static __int16_t* readimage(size_t& half_height, size_t& width, const char* filename) {
-  std::ifstream myfile(filename, std::ios::binary);
-
-  myfile.read((char*) &width, sizeof(width));
-  myfile.read((char*) &half_height, sizeof(half_height));
-  __int16_t* pixels = (__int16_t*) malloc(half_height * width * sizeof(__int16_t));
-  myfile.read((char*) pixels, half_height * width * sizeof(__int16_t));
-
-  assert(myfile.fail() == 0 && "Couldn't read file correctly.");
-  myfile.close();
-  return pixels;
+static inline std::string byteToHexstring(const Byte byte) {
+  const std::string table = "0123456789abcdef";
+  std::string hex;
+  hex.reserve(2);
+  hex.push_back(table[byte / 16]);
+  hex.push_back(table[byte % 16]);
+  return hex;
 }
 
-void printimage(
-  const char* inputFilename, const char* outputFilename, const double red, const double green,
-  const double blue, const double red2, const double green2, const double blue2) {
-  size_t half_height, width;
-  int16_t* pixels = readimage(half_height, width, inputFilename);
+static inline std::string toHexstring(const double a) {
+  return byteToHexstring(doubleToByte(a));
+}
 
-  const size_t half_size = half_height * width;
-  const size_t height    = 2 * half_height;
-  int maxiter            = 0;
-  for (size_t i = 0; i < half_size; ++i) {
-    if (pixels[i] > maxiter) {
-      maxiter = pixels[i];
-    }
-  }
-
-  pngwriter png(width, height, 0, outputFilename);
+void saveImage(const char* filename, Byte* pixels, const unsigned int width, const unsigned int height) {
+  pngwriter png(width, height, 0, filename);
   png.setcompressionlevel(9);
-
-  for (size_t i = 0; i < half_size; ++i) {
-    const double intensity   = modifier(double(pixels[i]) / maxiter);
-    const double pixel_red   = red * intensity + red2 * (1 - intensity);      // red
-    const double pixel_green = green * intensity + green2 * (1 - intensity);  // green
-    const double pixel_blue  = blue * intensity + blue2 * (1 - intensity);    // blue
-    unsigned int x           = i % width + 1;
-    unsigned int y           = i / width + 1;
-    png.plot(x, y, pixel_red, pixel_green, pixel_blue);
-    png.plot(width - x, height - y, pixel_red, pixel_green, pixel_blue);
+  const unsigned int size = width * height;
+  for (unsigned int i = 0; i < size; ++i) {
+    const unsigned int x    = i % width + 1;
+    const unsigned int y    = i / width + 1;
+    const double pixelRed   = (double) pixels[universal::RGB_COLORS * i] / universal::MAX_BYTE;
+    const double pixelGreen = (double) pixels[universal::RGB_COLORS * i + 1] / universal::MAX_BYTE;
+    const double pixelBlue  = (double) pixels[universal::RGB_COLORS * i + 2] / universal::MAX_BYTE;
+    png.plot(x, y, pixelRed, pixelGreen, pixelBlue);
   }
   png.close();
+}
 
+using namespace functionParameters;
+
+void screenshot() {
+  std::string filename = std::to_string(functionParameters::SCREENSHOT_WIDTH) + "x";
+  filename += std::to_string(functionParameters::SCREENSHOT_HEIGHT) + "_";
+  filename += std::to_string(RE_START) + "_" + std::to_string(IM_START) + "_" + std::to_string(STEP) + "_";
+  filename += toHexstring(RED) + toHexstring(GREEN) + toHexstring(BLUE) + ".png";
+
+  // Error here calloc has to be changed to malloc.
+  // call to screenshot seems to have no effect on the data
+  Byte* pixels = (Byte*) std::calloc(
+    universal::RGB_COLORS * functionParameters::SCREENSHOT_WIDTH * functionParameters::SCREENSHOT_HEIGHT, 1);
+  singleBigFrame(pixels);
+
+  saveImage(filename.c_str(), pixels, functionParameters::SCREENSHOT_WIDTH, functionParameters::SCREENSHOT_HEIGHT);
+  std::cout << "Current image has been saved as <" + filename + ">\n";
   free(pixels);
-  std::cout << "maximum Iterations: " << maxiter << std::endl;
 }
