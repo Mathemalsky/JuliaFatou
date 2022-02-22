@@ -99,7 +99,10 @@ int main(int, char**) {
   // main loop
   while (!glfwWindowShouldClose(window)) {
     // runs only through the loop if something changed
-    glfwWaitEvents();
+    glfwPollEvents();
+
+    // handle Events triggert by user input, like keyboard etc.
+    handleFastEvents();
 
     // draw the julia fatou image
     drawJuliaFatouImage(textureImg, cudaPixels);

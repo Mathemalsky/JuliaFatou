@@ -2,6 +2,10 @@
 
 #include "types.hpp"
 
+namespace control {
+inline const float RELATIVE_MOVE = 0.01;
+}
+
 namespace functionParameters {
 inline const float INITIAL_RE_START         = -2.0f;
 inline const float INITIAL_IM_START         = -2.0f * 720 / 1280;
