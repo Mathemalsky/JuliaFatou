@@ -16,9 +16,21 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
   if (key == GLFW_KEY_F2 && action == GLFW_PRESS) {
     screenshot();
   }
+  if (key == GLFW_KEY_F1 && action == GLFW_PRESS) {
+    toggleGui();
+  }
 }
 // enable gcc warning -Wunused-parameter
 #pragma GCC diagnostic pop
+
+void toggleGui() {
+  if (settingsWindow::SHOW_SETTINGS_WINDOW == true) {
+    settingsWindow::SHOW_SETTINGS_WINDOW = false;
+  }
+  else {
+    settingsWindow::SHOW_SETTINGS_WINDOW = true;
+  }
+}
 
 void handleFastEvents() {
 }
