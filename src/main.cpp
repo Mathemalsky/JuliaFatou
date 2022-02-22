@@ -93,8 +93,9 @@ int main(int, char**) {
 
   glViewport(0, 0, mainWindow::WIDTH, mainWindow::HEIGHT);
 
-  // Test
+  // set callbacks for keyboard and scrolling
   glfwSetKeyCallback(window, keyCallback);
+  glfwSetScrollCallback(window, scrollCallback);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {

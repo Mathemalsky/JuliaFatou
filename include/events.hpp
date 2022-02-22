@@ -7,4 +7,7 @@
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 void toggleGui();
+void reset();
 void handleFastEvents();
+
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
