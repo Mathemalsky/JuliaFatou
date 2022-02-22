@@ -1,5 +1,6 @@
 #pragma once
 
-using Byte = unsigned char;
+#include "types.hpp"
 
-void printImage(const char* filename, Byte* pixels, const unsigned int width, const unsigned int height);
+void saveImage(const char* filename, Byte* pixels, const unsigned int width, const unsigned int height);
+void screenshot();

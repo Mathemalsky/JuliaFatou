@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 namespace functionParameters {
 extern float RE_START;
 extern float RE_MAX;
@@ -12,12 +14,16 @@ extern float BLUE;
 extern int MAX_ITER;
 }  // namespace functionParameters
 
-namespace settingsWindow {
-extern bool SHOW_SETTINGS_WINDOW;
-}  // namespace settingsWindow
+namespace input {
+extern std::unordered_map<int, bool> STATE;
+}  // namespace input
 
 namespace mainWindow {
 extern unsigned int WIDTH;
 extern unsigned int HEIGHT;
 void initMainWindow();
 }  // namespace mainWindow
+
+namespace settingsWindow {
+extern bool SHOW_SETTINGS_WINDOW;
+}  // namespace settingsWindow

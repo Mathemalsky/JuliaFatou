@@ -82,7 +82,7 @@ void juliaFatouCUDA(Byte* textureImg, void* cudaPixels) {
   cudaMemcpy(textureImg, cudaPixels, imageSize * universal::RGB_COLORS, cudaMemcpyDeviceToHost);
 }
 
-void screenshot(Byte* pixels) {
+void singleBigFrame(Byte* pixels) {
   const unsigned int size = SCREENSHOT_WIDTH * SCREENSHOT_HEIGHT;
 
   // compute different start end end for picture

@@ -1,6 +1,6 @@
 #pragma once
 
-using Byte = unsigned char;
+#include "types.hpp"
 
 namespace functionParameters {
 inline const float INITIAL_RE_START         = -2.0f;

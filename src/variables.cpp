@@ -14,6 +14,10 @@ float BLUE;
 int MAX_ITER;
 }  // namespace functionParameters
 
+namespace input {
+std::unordered_map<int, bool> STATE;
+}  // namespace input
+
 namespace settingsWindow {
 bool SHOW_SETTINGS_WINDOW;
 }  // namespace settingsWindow
