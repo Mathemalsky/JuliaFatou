@@ -12,6 +12,7 @@
 #include "calculate.hpp"
 #include "constants.hpp"
 #include "draw.hpp"
+#include "events.hpp"
 #include "gui.hpp"
 #include "printimage.hpp"
 #include "variables.hpp"
@@ -45,15 +46,14 @@ int main(int, char**) {
   const char* glsl_version = "#version 130";
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-  glfwWindowHint(
-    GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);  // 3.2+ only
-                                                       // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,
-                                                       // GL_TRUE);            // 3.0+ only
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);  // 3.2+ only
+                                                                    // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,
+                                                                    // GL_TRUE);            // 3.0+ only
 #endif
 
   // create window in specified size
-  GLFWwindow* window = glfwCreateWindow(
-    mainWindow::INITIAL_WIDTH, mainWindow::INITIAL_HEIGHT, mainWindow::NAME, NULL, NULL);
+  GLFWwindow* window =
+    glfwCreateWindow(mainWindow::INITIAL_WIDTH, mainWindow::INITIAL_HEIGHT, mainWindow::NAME, NULL, NULL);
   if (window == NULL)
     return 1;
   glfwMakeContextCurrent(window);
@@ -68,10 +68,9 @@ int main(int, char**) {
   setUpImgui(window, glsl_version);
 
   // allocate memory for the drawing
-  const unsigned int textureSize =
-    universal::RGB_COLORS * mainWindow::INITIAL_WIDTH * mainWindow::INITIAL_HEIGHT;
-  Byte* textureImg = (Byte*) malloc(textureSize);
-  void* cudaPixels = allocateGraphicsMemory();
+  const unsigned int textureSize = universal::RGB_COLORS * mainWindow::INITIAL_WIDTH * mainWindow::INITIAL_HEIGHT;
+  Byte* textureImg               = (Byte*) malloc(textureSize);
+  void* cudaPixels               = allocateGraphicsMemory();
 
   // enable the texture which will be drawn
   glEnable(GL_TEXTURE_2D);
@@ -86,20 +85,21 @@ int main(int, char**) {
   glGenTextures(1, &textureID);
   glBindTexture(GL_TEXTURE_2D, textureID);
   glTexImage2D(
-    GL_TEXTURE_2D, 0, GL_RGB, mainWindow::INITIAL_WIDTH, mainWindow::INITIAL_HEIGHT, 0, GL_RGB,
-    GL_UNSIGNED_BYTE, textureImg);
+    GL_TEXTURE_2D, 0, GL_RGB, mainWindow::INITIAL_WIDTH, mainWindow::INITIAL_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE,
+    textureImg);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  // can be replaced by global window variables
-  int display_w, display_h;
-  glfwGetFramebufferSize(window, &display_w, &display_h);
-  glViewport(0, 0, display_w, display_h);
+  glViewport(0, 0, mainWindow::WIDTH, mainWindow::HEIGHT);
+
+  // Test
+  glfwSetKeyCallback(window, keyCallback);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
-    glfwPollEvents();
+    // runs only through the loop if something changed
+    glfwWaitEvents();
 
     // draw the julia fatou image
     drawJuliaFatouImage(textureImg, cudaPixels);

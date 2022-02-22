@@ -6,6 +6,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "constants.hpp"
+
 #include <pngwriter.h>
 
 static double modifier(const double x) {
@@ -27,8 +29,8 @@ static __int16_t* readimage(size_t& half_height, size_t& width, const char* file
 }
 
 void printimage(
-  const char* inputFilename, const char* outputFilename, const double red, const double green,
-  const double blue, const double red2, const double green2, const double blue2) {
+  const char* inputFilename, const char* outputFilename, const double red, const double green, const double blue,
+  const double red2, const double green2, const double blue2) {
   size_t half_height, width;
   int16_t* pixels = readimage(half_height, width, inputFilename);
 
@@ -58,4 +60,19 @@ void printimage(
 
   free(pixels);
   std::cout << "maximum Iterations: " << maxiter << std::endl;
+}
+
+void printImage(const char* filename, Byte* pixels, const unsigned int width, const unsigned int height) {
+  pngwriter png(width, height, 0, filename);
+  png.setcompressionlevel(9);
+  const unsigned int size = width * height;
+  for (unsigned int i = 0; i < size; ++i) {
+    const unsigned int x    = i % width + 1;
+    const unsigned int y    = i / width + 1;
+    const double pixelRed   = (double) pixels[universal::RGB_COLORS * i] / universal::MAX_BYTE;
+    const double pixelGreen = (double) pixels[universal::RGB_COLORS * i + 1] / universal::MAX_BYTE;
+    const double pixelBlue  = (double) pixels[universal::RGB_COLORS * i + 2] / universal::MAX_BYTE;
+    png.plot(x, y, pixelRed, pixelGreen, pixelBlue);
+  }
+  png.close();
 }

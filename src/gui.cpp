@@ -51,8 +51,7 @@ void drawImgui() {
     ImGui::Text("RE_START: %.3f", functionParameters::RE_START);
     ImGui::Text("IM_START: %.3f", functionParameters::IM_START);
     ImGui::Text(
-      "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
-      ImGui::GetIO().Framerate);
+      "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     if (ImGui::Button("Close"))
       settingsWindow::SHOW_SETTINGS_WINDOW = false;
     ImGui::End();

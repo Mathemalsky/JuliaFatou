@@ -21,7 +21,6 @@ bool SHOW_SETTINGS_WINDOW;
 namespace mainWindow {
 unsigned int WIDTH;
 unsigned int HEIGHT;
-unsigned int TextureSize;
 
 void initMainWindow() {
   WIDTH  = INITIAL_WIDTH;
