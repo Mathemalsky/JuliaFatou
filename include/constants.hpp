@@ -8,12 +8,14 @@ inline const double SCROLL_ZOOM   = 0.0002;
 }  // namespace control
 
 namespace functionParameters {
-inline const double INITIAL_RE_START        = -2.0f;
-inline const double INITIAL_IM_START        = -2.0f * 720 / 1280;
-inline const double INITIAL_STEP            = 4.0f / 1280;
-inline const double INITIAL_RED             = 0.8f;
-inline const double INITIAL_GREEN           = 0.0f;
-inline const double INITIAL_BLUE            = 0.6f;
+inline const float INITIAL_RE_START         = -2.0f;
+inline const float INITIAL_IM_START         = -2.0f * 720 / 1280;
+inline const float INITIAL_RE_OFFSET        = -0.78f;
+inline const float INITIAL_IM_OFFSET        = -0.18f;
+inline const float INITIAL_STEP             = 4.0f / 1280;
+inline const float INITIAL_RED              = 0.8f;
+inline const float INITIAL_GREEN            = 0.0f;
+inline const float INITIAL_BLUE             = 0.6f;
 inline const int INITIAL_MAX_ITER           = 70;
 inline const double NORM_LIMIT              = 1000;
 inline const unsigned int SCREENSHOT_WIDTH  = 3840;

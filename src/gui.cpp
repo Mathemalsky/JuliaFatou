@@ -13,6 +13,8 @@ void initImGuiWindows() {
   imGuiWindow::SHOW_SETTINGS_WINDOW = imGuiWindow::INITIAL_SHOW_SETTINGS_WINDOW;
   functionParameters::RE_START      = functionParameters::INITIAL_RE_START;
   functionParameters::IM_START      = functionParameters::INITIAL_IM_START;
+  functionParameters::RE_OFFSET     = functionParameters::INITIAL_RE_OFFSET;
+  functionParameters::IM_OFFSET     = functionParameters::INITIAL_IM_OFFSET;
   functionParameters::STEP          = functionParameters::INITIAL_STEP;
   functionParameters::RED           = functionParameters::INITIAL_RED;
   functionParameters::GREEN         = functionParameters::INITIAL_GREEN;
@@ -49,6 +51,8 @@ void drawImgui() {
     ImGui::Begin("Settings", &imGuiWindow::SHOW_SETTINGS_WINDOW);
     ImGui::SliderFloat("step size", &functionParameters::STEP, 0.0f, 1.0f);
     ImGui::SliderInt("max. iterations", &functionParameters::MAX_ITER, 0, 255);
+    ImGui::SliderFloat("Re offset", &functionParameters::RE_OFFSET, -2.0f, 2.0f);
+    ImGui::SliderFloat("Im offset", &functionParameters::IM_OFFSET, -2.0f, 2.0f);
     ImGui::SliderFloat("Red", &functionParameters::RED, 0.0f, 1.0f);
     ImGui::SliderFloat("Green", &functionParameters::GREEN, 0.0f, 1.0f);
     ImGui::SliderFloat("Blue", &functionParameters::BLUE, 0.0f, 1.0f);
