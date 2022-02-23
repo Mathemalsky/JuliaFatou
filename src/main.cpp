@@ -61,7 +61,7 @@ int main(int, char**) {
   glfwSwapInterval(1);  // enable vsync
 
   // set initial state of the settings window
-  initSettingsWindow();
+  initImGuiWindows();
   mainWindow::initMainWindow();
 
   // setup Dear ImGui

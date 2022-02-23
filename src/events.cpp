@@ -13,11 +13,14 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  if (key == GLFW_KEY_F1 && action == GLFW_PRESS) {
+    toggleHelpWindow();
+  }
   if (key == GLFW_KEY_F2 && action == GLFW_PRESS) {
     screenshot();
   }
-  if (key == GLFW_KEY_F1 && action == GLFW_PRESS) {
-    toggleGui();
+  if (key == GLFW_KEY_F3 && action == GLFW_PRESS) {
+    toggleSettingsWindow();
   }
   if (key == GLFW_KEY_R && action == GLFW_PRESS) {
     reset();
@@ -50,12 +53,21 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 // enable gcc warning -Wunused-parameter
 #pragma GCC diagnostic pop
 
-void toggleGui() {
-  if (settingsWindow::SHOW_SETTINGS_WINDOW == true) {
-    settingsWindow::SHOW_SETTINGS_WINDOW = false;
+void toggleHelpWindow() {
+  if (imGuiWindow::SHOW_HELP_WINDOW == true) {
+    imGuiWindow::SHOW_HELP_WINDOW = false;
   }
   else {
-    settingsWindow::SHOW_SETTINGS_WINDOW = true;
+    imGuiWindow::SHOW_HELP_WINDOW = true;
+  }
+}
+
+void toggleSettingsWindow() {
+  if (imGuiWindow::SHOW_SETTINGS_WINDOW == true) {
+    imGuiWindow::SHOW_SETTINGS_WINDOW = false;
+  }
+  else {
+    imGuiWindow::SHOW_SETTINGS_WINDOW = true;
   }
 }
 

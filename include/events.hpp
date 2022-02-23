@@ -6,7 +6,8 @@
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-void toggleGui();
+void toggleHelpWindow();
+void toggleSettingsWindow();
 void reset();
 void handleFastEvents();
 

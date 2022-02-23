@@ -30,9 +30,10 @@ namespace settingsGPU {
 inline const unsigned int BLOCKSIZE = 256;
 }  // namespace settingsGPU
 
-namespace settingsWindow {
+namespace imGuiWindow {
 inline const bool INITIAL_SHOW_SETTINGS_WINDOW = true;
-}  // namespace settingsWindow
+inline const bool INITIAL_SHOW_HELP_WINDOW     = true;
+}  // namespace imGuiWindow
 
 namespace universal {
 inline const unsigned int RGB_COLORS = 3;

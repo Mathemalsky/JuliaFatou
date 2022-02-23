@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-void initSettingsWindow();
+void initImGuiWindows();
 void setUpImgui(GLFWwindow* window, const char* glsl_version);
 void drawImgui();
 void cleanUpImgui();

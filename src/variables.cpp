@@ -18,9 +18,10 @@ namespace input {
 std::unordered_map<int, bool> STATE;
 }  // namespace input
 
-namespace settingsWindow {
+namespace imGuiWindow {
 bool SHOW_SETTINGS_WINDOW;
-}  // namespace settingsWindow
+bool SHOW_HELP_WINDOW;
+}  // namespace imGuiWindow
 
 namespace mainWindow {
 unsigned int WIDTH;

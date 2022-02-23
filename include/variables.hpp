@@ -24,6 +24,7 @@ extern unsigned int HEIGHT;
 void initMainWindow();
 }  // namespace mainWindow
 
-namespace settingsWindow {
+namespace imGuiWindow {
 extern bool SHOW_SETTINGS_WINDOW;
-}  // namespace settingsWindow
+extern bool SHOW_HELP_WINDOW;
+}  // namespace imGuiWindow
