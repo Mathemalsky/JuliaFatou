@@ -5,9 +5,9 @@
 namespace functionParameters {
 float RE_OFFSET;
 float RE_START;
-float RE_MAX;
+// float RE_MAX;
 float IM_START;
-float IM_MAX;
+// float IM_MAX;
 float IM_OFFSET;
 float STEP;
 float RED;
