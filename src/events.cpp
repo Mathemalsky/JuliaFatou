@@ -9,6 +9,10 @@
 #include "printimage.hpp"
 #include "variables.hpp"
 
+/***********************************************************************************************************************
+ *                                   events triggert by pressing keys
+ **********************************************************************************************************************/
+
 // disable gcc warning -Wunused-parameter
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -96,6 +100,9 @@ void handleFastEvents() {
   }
 }
 
+/***********************************************************************************************************************
+ *                                   events triggert by the mouse
+ **********************************************************************************************************************/
 // disable gcc warning -Wunused-parameter
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -104,6 +111,19 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
   STEP += stepDecrement;
   IM_START -= stepDecrement * mainWindow::HEIGHT * 0.5;
   RE_START -= stepDecrement * mainWindow::WIDTH * 0.5;
+}
+// enable gcc warning -Wunused-parameter
+#pragma GCC diagnostic pop
+
+/***********************************************************************************************************************
+ *                                   events triggert by the window
+ **********************************************************************************************************************/
+// disable gcc warning -Wunused-parameter
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+void windowSizeCallback(GLFWwindow* window, int width, int height) {
+  mainWindow::WIDTH  = width;
+  mainWindow::HEIGHT = height;
 }
 // enable gcc warning -Wunused-parameter
 #pragma GCC diagnostic pop

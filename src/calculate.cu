@@ -56,8 +56,7 @@ __global__ static void calculatePixelsGPU(
 
 void* allocateGraphicsMemory() {
   void* cudaPixels;
-  const unsigned int imageSize = mainWindow::WIDTH * mainWindow::HEIGHT;
-  cudaMalloc((void**) &cudaPixels, imageSize * universal::RGB_COLORS);
+  cudaMalloc((void**) &cudaPixels, mainWindow::MAX_WIDTH_X_HEIGHT * universal::RGB_COLORS);
   return cudaPixels;
 }
 

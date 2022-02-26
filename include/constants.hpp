@@ -23,9 +23,10 @@ inline const unsigned int SCREENSHOT_HEIGHT = 2160;
 }  // namespace functionParameters
 
 namespace mainWindow {
-inline const char* NAME                  = "JuliaFatou";
-inline const unsigned int INITIAL_HEIGHT = 720;
-inline const unsigned int INITIAL_WIDTH  = 1280;
+inline const char* NAME                      = "JuliaFatou";
+inline const unsigned int INITIAL_WIDTH      = 1280;
+inline const unsigned int INITIAL_HEIGHT     = 720;
+inline const unsigned int MAX_WIDTH_X_HEIGHT = 1920 * 1080;
 }  // namespace mainWindow
 
 namespace settingsGPU {

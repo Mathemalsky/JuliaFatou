@@ -12,3 +12,5 @@ void reset();
 void handleFastEvents();
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+
+void windowSizeCallback(GLFWwindow* window, int width, int height);

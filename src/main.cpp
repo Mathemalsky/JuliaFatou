@@ -68,7 +68,7 @@ int main(int, char**) {
   setUpImgui(window, glsl_version);
 
   // allocate memory for the drawing
-  const unsigned int textureSize = universal::RGB_COLORS * mainWindow::INITIAL_WIDTH * mainWindow::INITIAL_HEIGHT;
+  const unsigned int textureSize = universal::RGB_COLORS * mainWindow::MAX_WIDTH_X_HEIGHT;
   Byte* textureImg               = (Byte*) malloc(textureSize);
   void* cudaPixels               = allocateGraphicsMemory();
 
@@ -96,6 +96,7 @@ int main(int, char**) {
   // set callbacks for keyboard and scrolling
   glfwSetKeyCallback(window, keyCallback);
   glfwSetScrollCallback(window, scrollCallback);
+  glfwSetWindowSizeCallback(window, windowSizeCallback);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
