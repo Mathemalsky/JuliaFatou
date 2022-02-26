@@ -3,10 +3,10 @@
 #include "constants.hpp"
 
 namespace functionParameters {
+float RE_OFFSET;
 float RE_START;
-float RE_MAX;
 float IM_START;
-float IM_MAX;
+float IM_OFFSET;
 float STEP;
 float RED;
 float GREEN;
@@ -18,9 +18,10 @@ namespace input {
 std::unordered_map<int, bool> STATE;
 }  // namespace input
 
-namespace settingsWindow {
+namespace imGuiWindow {
 bool SHOW_SETTINGS_WINDOW;
-}  // namespace settingsWindow
+bool SHOW_HELP_WINDOW;
+}  // namespace imGuiWindow
 
 namespace mainWindow {
 unsigned int WIDTH;

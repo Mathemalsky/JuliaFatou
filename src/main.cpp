@@ -61,7 +61,7 @@ int main(int, char**) {
   glfwSwapInterval(1);  // enable vsync
 
   // set initial state of the settings window
-  initSettingsWindow();
+  initImGuiWindows();
   mainWindow::initMainWindow();
 
   // setup Dear ImGui
@@ -93,13 +93,17 @@ int main(int, char**) {
 
   glViewport(0, 0, mainWindow::WIDTH, mainWindow::HEIGHT);
 
-  // Test
+  // set callbacks for keyboard and scrolling
   glfwSetKeyCallback(window, keyCallback);
+  glfwSetScrollCallback(window, scrollCallback);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
     // runs only through the loop if something changed
-    glfwWaitEvents();
+    glfwPollEvents();
+
+    // handle Events triggert by user input, like keyboard etc.
+    handleFastEvents();
 
     // draw the julia fatou image
     drawJuliaFatouImage(textureImg, cudaPixels);

@@ -27,15 +27,15 @@ struct Complex {
   }
 };
 
-__device__ static Complex function(const Complex& z) {
-  return z * z + Complex(-0.78, -0.18);
+__device__ static Complex function(const Complex& z, const float reOffset, const float imOffset) {
+  return z * z + Complex(reOffset, imOffset);
 }
 
 // iterate the function and calculate the color
 __global__ static void calculatePixelsGPU(
   Byte* cudaPixels, const unsigned int imageSize, const unsigned int width, const float step,
-  const unsigned int max_iter, const float startRe, const float startIm, const float red, const float green,
-  const float blue) {
+  const unsigned int max_iter, const float startRe, const float startIm, const float reOffset, const float imOffset,
+  const float red, const float green, const float blue) {
   int id = blockIdx.x * blockDim.x + threadIdx.x;
   if (id < imageSize) {
     int idx             = id % width;
@@ -43,7 +43,7 @@ __global__ static void calculatePixelsGPU(
     __int16_t iteration = 0;
     Complex z           = Complex(startRe + idx * step, startIm + idy * step);
     do {
-      z = function(z);
+      z = function(z, reOffset, imOffset);
       ++iteration;
     } while (iteration < max_iter && z.squaredAbs() < functionParameters::NORM_LIMIT);
 
@@ -76,7 +76,8 @@ void juliaFatouCUDA(Byte* textureImg, void* cudaPixels) {
 
   // do computation
   calculatePixelsGPU<<<gridDim, blockDim>>>(
-    (Byte*) cudaPixels, imageSize, mainWindow::WIDTH, STEP, MAX_ITER, RE_START, IM_START, RED, GREEN, BLUE);
+    (Byte*) cudaPixels, imageSize, mainWindow::WIDTH, STEP, MAX_ITER, RE_START, IM_START, RE_OFFSET, IM_OFFSET, RED,
+    GREEN, BLUE);
 
   // copy memory from GRAM to RAM
   cudaMemcpy(textureImg, cudaPixels, imageSize * universal::RGB_COLORS, cudaMemcpyDeviceToHost);
@@ -101,7 +102,7 @@ void singleBigFrame(Byte* pixels) {
 
   // compute image for the screenshot
   calculatePixelsGPU<<<gridDim, blockDim>>>(
-    cudaPixels, size, SCREENSHOT_WIDTH, step, MAX_ITER, reStart, imStart, RED, GREEN, BLUE);
+    cudaPixels, size, SCREENSHOT_WIDTH, step, MAX_ITER, reStart, imStart, RE_OFFSET, IM_OFFSET, RED, GREEN, BLUE);
 
   cudaMemcpy(pixels, cudaPixels, size * universal::RGB_COLORS, cudaMemcpyDeviceToHost);
 

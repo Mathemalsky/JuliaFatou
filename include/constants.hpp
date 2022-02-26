@@ -2,9 +2,16 @@
 
 #include "types.hpp"
 
+namespace control {
+inline const double RELATIVE_MOVE = 0.01;
+inline const double SCROLL_ZOOM   = 0.0002;
+}  // namespace control
+
 namespace functionParameters {
 inline const float INITIAL_RE_START         = -2.0f;
 inline const float INITIAL_IM_START         = -2.0f * 720 / 1280;
+inline const float INITIAL_RE_OFFSET        = -0.78f;
+inline const float INITIAL_IM_OFFSET        = -0.18f;
 inline const float INITIAL_STEP             = 4.0f / 1280;
 inline const float INITIAL_RED              = 0.8f;
 inline const float INITIAL_GREEN            = 0.0f;
@@ -25,9 +32,10 @@ namespace settingsGPU {
 inline const unsigned int BLOCKSIZE = 256;
 }  // namespace settingsGPU
 
-namespace settingsWindow {
+namespace imGuiWindow {
 inline const bool INITIAL_SHOW_SETTINGS_WINDOW = true;
-}  // namespace settingsWindow
+inline const bool INITIAL_SHOW_HELP_WINDOW     = true;
+}  // namespace imGuiWindow
 
 namespace universal {
 inline const unsigned int RGB_COLORS = 3;

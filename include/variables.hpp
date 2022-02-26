@@ -4,9 +4,9 @@
 
 namespace functionParameters {
 extern float RE_START;
-extern float RE_MAX;
+extern float RE_OFFSET;
 extern float IM_START;
-extern float IM_MAX;
+extern float IM_OFFSET;
 extern float STEP;
 extern float RED;
 extern float GREEN;
@@ -24,6 +24,7 @@ extern unsigned int HEIGHT;
 void initMainWindow();
 }  // namespace mainWindow
 
-namespace settingsWindow {
+namespace imGuiWindow {
 extern bool SHOW_SETTINGS_WINDOW;
-}  // namespace settingsWindow
+extern bool SHOW_HELP_WINDOW;
+}  // namespace imGuiWindow
