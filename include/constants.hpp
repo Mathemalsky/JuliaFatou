@@ -4,7 +4,7 @@
 
 namespace control {
 inline const double RELATIVE_MOVE = 0.01;
-inline const double SCROLL_ZOOM   = 0.0002;
+inline const double SCROLL_ZOOM   = 0.99;
 }  // namespace control
 
 namespace functionParameters {

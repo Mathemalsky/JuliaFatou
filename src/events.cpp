@@ -87,16 +87,16 @@ void reset() {
 // handle events that should be evaluated each frame
 void handleFastEvents() {
   if (input::STATE[GLFW_KEY_UP]) {
-    IM_START -= control::RELATIVE_MOVE * STEP * mainWindow::HEIGHT;
-  }
-  if (input::STATE[GLFW_KEY_DOWN]) {
     IM_START += control::RELATIVE_MOVE * STEP * mainWindow::HEIGHT;
   }
+  if (input::STATE[GLFW_KEY_DOWN]) {
+    IM_START -= control::RELATIVE_MOVE * STEP * mainWindow::HEIGHT;
+  }
   if (input::STATE[GLFW_KEY_RIGHT]) {
-    RE_START -= control::RELATIVE_MOVE * STEP * mainWindow::WIDTH;
+    RE_START += control::RELATIVE_MOVE * STEP * mainWindow::WIDTH;
   }
   if (input::STATE[GLFW_KEY_LEFT]) {
-    RE_START += control::RELATIVE_MOVE * STEP * mainWindow::WIDTH;
+    RE_START -= control::RELATIVE_MOVE * STEP * mainWindow::WIDTH;
   }
 }
 
@@ -107,8 +107,9 @@ void handleFastEvents() {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-  const double stepDecrement = -control::SCROLL_ZOOM * yoffset;
-  STEP += stepDecrement;
+  const double newStep       = STEP * std::pow(control::SCROLL_ZOOM, yoffset);
+  const double stepDecrement = newStep - STEP;
+  STEP                       = newStep;
   IM_START -= stepDecrement * mainWindow::HEIGHT * 0.5;
   RE_START -= stepDecrement * mainWindow::WIDTH * 0.5;
 }
