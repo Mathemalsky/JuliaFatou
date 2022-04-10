@@ -8,9 +8,12 @@ float RE_START;
 float IM_START;
 float IM_OFFSET;
 float STEP;
-float RED;
-float GREEN;
-float BLUE;
+float C_RED;
+float C_GREEN;
+float C_BLUE;
+float D_RED;
+float D_GREEN;
+float D_BLUE;
 int MAX_ITER;
 }  // namespace functionParameters
 
@@ -21,6 +24,7 @@ std::unordered_map<int, bool> STATE;
 namespace imGuiWindow {
 bool SHOW_SETTINGS_WINDOW;
 bool SHOW_HELP_WINDOW;
+bool CALC_CONVERGENCE;
 }  // namespace imGuiWindow
 
 namespace mainWindow {

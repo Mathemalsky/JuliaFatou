@@ -16,13 +16,17 @@ void initImGuiWindows() {
   functionParameters::RE_OFFSET     = functionParameters::INITIAL_RE_OFFSET;
   functionParameters::IM_OFFSET     = functionParameters::INITIAL_IM_OFFSET;
   functionParameters::STEP          = functionParameters::INITIAL_STEP;
-  functionParameters::RED           = functionParameters::INITIAL_RED;
-  functionParameters::GREEN         = functionParameters::INITIAL_GREEN;
-  functionParameters::BLUE          = functionParameters::INITIAL_BLUE;
+  functionParameters::D_RED         = functionParameters::INITIAL_D_RED;
+  functionParameters::D_GREEN       = functionParameters::INITIAL_D_GREEN;
+  functionParameters::D_BLUE        = functionParameters::INITIAL_D_BLUE;
+  functionParameters::C_RED         = functionParameters::INITIAL_C_RED;
+  functionParameters::C_GREEN       = functionParameters::INITIAL_C_GREEN;
+  functionParameters::C_BLUE        = functionParameters::INITIAL_C_BLUE;
   functionParameters::MAX_ITER      = functionParameters::INITIAL_MAX_ITER;
 
   // help window
   imGuiWindow::SHOW_HELP_WINDOW = imGuiWindow::INITIAL_SHOW_HELP_WINDOW;
+  imGuiWindow::CALC_CONVERGENCE = imGuiWindow::INITIAL_CALC_CONVERGENCE;
 }
 
 void setUpImgui(GLFWwindow* window, const char* glsl_version) {
@@ -53,9 +57,15 @@ void drawImgui() {
     ImGui::SliderInt("max. iterations", &functionParameters::MAX_ITER, 0, 255);
     ImGui::SliderFloat("Re offset", &functionParameters::RE_OFFSET, -2.0f, 2.0f);
     ImGui::SliderFloat("Im offset", &functionParameters::IM_OFFSET, -2.0f, 2.0f);
-    ImGui::SliderFloat("Red", &functionParameters::RED, 0.0f, 1.0f);
-    ImGui::SliderFloat("Green", &functionParameters::GREEN, 0.0f, 1.0f);
-    ImGui::SliderFloat("Blue", &functionParameters::BLUE, 0.0f, 1.0f);
+    ImGui::Text("Select color for divergent points:");
+    ImGui::SliderFloat("Red", &functionParameters::D_RED, 0.0f, 1.0f);
+    ImGui::SliderFloat("Green", &functionParameters::D_GREEN, 0.0f, 1.0f);
+    ImGui::SliderFloat("Blue", &functionParameters::D_BLUE, 0.0f, 1.0f);
+    ImGui::Checkbox("Consider convergence", &imGuiWindow::CALC_CONVERGENCE);
+    ImGui::Text("Select color for convergent points:");
+    ImGui::SliderFloat("Red", &functionParameters::C_RED, 0.0f, 1.0f);
+    ImGui::SliderFloat("Green", &functionParameters::C_GREEN, 0.0f, 1.0f);
+    ImGui::SliderFloat("Blue", &functionParameters::C_BLUE, 0.0f, 1.0f);
     ImGui::Text("RE_START: %.3f", functionParameters::RE_START);
     ImGui::Text("IM_START: %.3f", functionParameters::IM_START);
     ImGui::Text(
