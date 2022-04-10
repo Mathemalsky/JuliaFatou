@@ -58,14 +58,14 @@ void drawImgui() {
     ImGui::SliderFloat("Re offset", &functionParameters::RE_OFFSET, -2.0f, 2.0f);
     ImGui::SliderFloat("Im offset", &functionParameters::IM_OFFSET, -2.0f, 2.0f);
     ImGui::Text("Select color for divergent points:");
-    ImGui::SliderFloat("Red", &functionParameters::D_RED, 0.0f, 1.0f);
-    ImGui::SliderFloat("Green", &functionParameters::D_GREEN, 0.0f, 1.0f);
-    ImGui::SliderFloat("Blue", &functionParameters::D_BLUE, 0.0f, 1.0f);
+    ImGui::SliderFloat("divergent Red", &functionParameters::D_RED, 0.0f, 1.0f);
+    ImGui::SliderFloat("divergent Green", &functionParameters::D_GREEN, 0.0f, 1.0f);
+    ImGui::SliderFloat("divergent Blue", &functionParameters::D_BLUE, 0.0f, 1.0f);
     ImGui::Checkbox("Consider convergence", &imGuiWindow::CALC_CONVERGENCE);
     ImGui::Text("Select color for convergent points:");
-    ImGui::SliderFloat("Red", &functionParameters::C_RED, 0.0f, 1.0f);
-    ImGui::SliderFloat("Green", &functionParameters::C_GREEN, 0.0f, 1.0f);
-    ImGui::SliderFloat("Blue", &functionParameters::C_BLUE, 0.0f, 1.0f);
+    ImGui::SliderFloat("convergent Red", &functionParameters::C_RED, 0.0f, 1.0f);
+    ImGui::SliderFloat("convergent Green", &functionParameters::C_GREEN, 0.0f, 1.0f);
+    ImGui::SliderFloat("convergent Blue", &functionParameters::C_BLUE, 0.0f, 1.0f);
     ImGui::Text("RE_START: %.3f", functionParameters::RE_START);
     ImGui::Text("IM_START: %.3f", functionParameters::IM_START);
     ImGui::Text(
