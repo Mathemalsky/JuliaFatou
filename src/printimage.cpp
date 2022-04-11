@@ -47,7 +47,7 @@ void screenshot() {
   std::string filename = std::to_string(functionParameters::SCREENSHOT_WIDTH) + "x";
   filename += std::to_string(functionParameters::SCREENSHOT_HEIGHT) + "_";
   filename += std::to_string(RE_START) + "_" + std::to_string(IM_START) + "_" + std::to_string(STEP) + "_";
-  filename += toHexstring(RED) + toHexstring(GREEN) + toHexstring(BLUE) + ".png";
+  filename += toHexstring(D_RED) + toHexstring(D_GREEN) + toHexstring(D_BLUE) + ".png";
 
   // Error here calloc has to be changed to malloc.
   // call to screenshot seems to have no effect on the data

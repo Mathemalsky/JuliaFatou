@@ -9,6 +9,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 void toggleHelpWindow();
 void toggleSettingsWindow();
 void reset();
-void handleFastEvents();
+void handleFastEvents(GLFWwindow* window);
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+
+void windowSizeCallback(GLFWwindow* window, int width, int height);

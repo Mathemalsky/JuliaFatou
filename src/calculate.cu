@@ -8,6 +8,7 @@
 #include <cuda.h>
 
 #include "constants.hpp"
+#include "types.hpp"
 #include "variables.hpp"
 
 #include <iostream>
@@ -19,8 +20,15 @@ struct Complex {
   __device__ Complex operator*(const Complex& a) const {
     return Complex(p_re * a.p_re - p_im * a.p_im, p_re * a.p_im + p_im * a.p_re);
   }
+  __device__ Complex operator/(const Complex& a) const {
+    const double r2 = a.squaredAbs();
+    return Complex((p_re * a.p_re + p_im * a.p_im) / r2, (p_re * a.p_im - p_im * a.p_re) / r2);
+  }
   __device__ Complex operator+(const Complex& a) const {
     return Complex(p_re + a.p_re, p_im + a.p_im);
+  }
+  __device__ Complex operator-(const Complex& a) const {
+    return Complex(p_re - a.p_re, p_im - a.p_im);
   }
   __device__ double squaredAbs() const {
     return p_re * p_re + p_im * p_im;
@@ -35,29 +43,42 @@ __device__ static Complex function(const Complex& z, const float reOffset, const
 __global__ static void calculatePixelsGPU(
   Byte* cudaPixels, const unsigned int imageSize, const unsigned int width, const float step,
   const unsigned int max_iter, const float startRe, const float startIm, const float reOffset, const float imOffset,
-  const float red, const float green, const float blue) {
+  const RGB dCol, const RGB cCol, const bool check_conv) {
   int id = blockIdx.x * blockDim.x + threadIdx.x;
   if (id < imageSize) {
     int idx             = id % width;
     int idy             = id / width;
     __int16_t iteration = 0;
     Complex z           = Complex(startRe + idx * step, startIm + idy * step);
+    Complex z_prev(0.0, 0.0);
     do {
-      z = function(z, reOffset, imOffset);
+      z_prev = z;
+      z      = function(z, reOffset, imOffset);
       ++iteration;
+      if (check_conv && (z / z_prev - Complex(1, 0)).squaredAbs() < functionParameters::CONVERGENCE_LIMIT) {
+        iteration = -iteration;
+        break;  // escapes the while loop
+      }
     } while (iteration < max_iter && z.squaredAbs() < functionParameters::NORM_LIMIT);
 
     // calculate colors and write
-    cudaPixels[3 * (width * idy + idx)]     = std::round((red * iteration * universal::MAX_BYTE) / max_iter);
-    cudaPixels[3 * (width * idy + idx) + 1] = std::round((green * iteration * universal::MAX_BYTE) / max_iter);
-    cudaPixels[3 * (width * idy + idx) + 2] = std::round((blue * iteration * universal::MAX_BYTE) / max_iter);
+    if (iteration > 0) {
+      cudaPixels[3 * (width * idy + idx)]     = std::round((dCol.red * iteration * universal::MAX_BYTE) / max_iter);
+      cudaPixels[3 * (width * idy + idx) + 1] = std::round((dCol.green * iteration * universal::MAX_BYTE) / max_iter);
+      cudaPixels[3 * (width * idy + idx) + 2] = std::round((dCol.blue * iteration * universal::MAX_BYTE) / max_iter);
+    }
+    else {
+      iteration                               = -iteration;
+      cudaPixels[3 * (width * idy + idx)]     = std::round((cCol.red * iteration * universal::MAX_BYTE) / max_iter);
+      cudaPixels[3 * (width * idy + idx) + 1] = std::round((cCol.green * iteration * universal::MAX_BYTE) / max_iter);
+      cudaPixels[3 * (width * idy + idx) + 2] = std::round((cCol.blue * iteration * universal::MAX_BYTE) / max_iter);
+    }
   }
 }
 
 void* allocateGraphicsMemory() {
   void* cudaPixels;
-  const unsigned int imageSize = mainWindow::WIDTH * mainWindow::HEIGHT;
-  cudaMalloc((void**) &cudaPixels, imageSize * universal::RGB_COLORS);
+  cudaMalloc((void**) &cudaPixels, mainWindow::MAX_WIDTH_X_HEIGHT * universal::RGB_COLORS);
   return cudaPixels;
 }
 
@@ -76,8 +97,8 @@ void juliaFatouCUDA(Byte* textureImg, void* cudaPixels) {
 
   // do computation
   calculatePixelsGPU<<<gridDim, blockDim>>>(
-    (Byte*) cudaPixels, imageSize, mainWindow::WIDTH, STEP, MAX_ITER, RE_START, IM_START, RE_OFFSET, IM_OFFSET, RED,
-    GREEN, BLUE);
+    (Byte*) cudaPixels, imageSize, mainWindow::WIDTH, STEP, MAX_ITER, RE_START, IM_START, RE_OFFSET, IM_OFFSET,
+    RGB{D_RED, D_GREEN, D_BLUE}, RGB{C_RED, C_GREEN, C_BLUE}, imGuiWindow::CALC_CONVERGENCE);
 
   // copy memory from GRAM to RAM
   cudaMemcpy(textureImg, cudaPixels, imageSize * universal::RGB_COLORS, cudaMemcpyDeviceToHost);
@@ -102,7 +123,8 @@ void singleBigFrame(Byte* pixels) {
 
   // compute image for the screenshot
   calculatePixelsGPU<<<gridDim, blockDim>>>(
-    cudaPixels, size, SCREENSHOT_WIDTH, step, MAX_ITER, reStart, imStart, RE_OFFSET, IM_OFFSET, RED, GREEN, BLUE);
+    cudaPixels, size, SCREENSHOT_WIDTH, step, MAX_ITER, reStart, imStart, RE_OFFSET, IM_OFFSET,
+    RGB{D_RED, D_GREEN, D_BLUE}, RGB{C_RED, C_GREEN, C_BLUE}, imGuiWindow::CALC_CONVERGENCE);
 
   cudaMemcpy(pixels, cudaPixels, size * universal::RGB_COLORS, cudaMemcpyDeviceToHost);
 
