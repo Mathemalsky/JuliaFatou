@@ -21,6 +21,7 @@ namespace input {
 extern std::unordered_map<int, bool> STATE;
 extern double MOUSE_X;
 extern double MOUSE_Y;
+extern bool MOUSE_USE;
 }  // namespace input
 
 namespace imGuiWindow {
