@@ -75,17 +75,19 @@ void toggleSettingsWindow() {
   }
 }
 
-using namespace functionParameters;
-
 // set setting to standard
 void reset() {
-  RE_START = INITIAL_RE_START;
-  IM_START = INITIAL_IM_START;
-  STEP     = INITIAL_STEP;
+  functionParameters::RE_START = functionParameters::INITIAL_RE_START;
+  functionParameters::IM_START = functionParameters::INITIAL_IM_START;
+  functionParameters::STEP     = functionParameters::INITIAL_STEP;
+  mainWindow::WIDTH            = mainWindow::INITIAL_WIDTH;
+  mainWindow::HEIGHT           = mainWindow::INITIAL_HEIGHT;
 }
 
+using namespace functionParameters;
+
 // handle events that should be evaluated each frame
-void handleFastEvents() {
+void handleFastEvents(GLFWwindow* window) {
   if (input::STATE[GLFW_KEY_UP]) {
     IM_START += control::RELATIVE_MOVE * STEP * mainWindow::HEIGHT;
   }
@@ -97,6 +99,16 @@ void handleFastEvents() {
   }
   if (input::STATE[GLFW_KEY_LEFT]) {
     RE_START -= control::RELATIVE_MOVE * STEP * mainWindow::WIDTH;
+  }
+  // move the display area by mouse cursor
+  if (input::STATE[GLFW_MOUSE_BUTTON_LEFT]) {
+    double x, y;
+    glfwGetCursorPos(window, &x, &y);
+    x -= input::MOUSE_X;
+    y -= input::MOUSE_Y;
+    RE_START -= STEP * x;
+    IM_START += STEP * y;
+    glfwGetCursorPos(window, &input::MOUSE_X, &input::MOUSE_Y);
   }
 }
 
@@ -112,6 +124,21 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
   STEP                       = newStep;
   IM_START -= stepDecrement * mainWindow::HEIGHT * 0.5;
   RE_START -= stepDecrement * mainWindow::WIDTH * 0.5;
+}
+// enable gcc warning -Wunused-parameter
+#pragma GCC diagnostic pop
+
+// disable gcc warning -Wunused-parameter
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+  if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+    glfwGetCursorPos(window, &input::MOUSE_X, &input::MOUSE_Y);
+    input::STATE[GLFW_MOUSE_BUTTON_LEFT] = true;
+  }
+  if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+    input::STATE[GLFW_MOUSE_BUTTON_LEFT] = false;
+  }
 }
 // enable gcc warning -Wunused-parameter
 #pragma GCC diagnostic pop

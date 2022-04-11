@@ -53,7 +53,7 @@ void drawImgui() {
 
   if (imGuiWindow::SHOW_SETTINGS_WINDOW) {
     ImGui::Begin("Settings", &imGuiWindow::SHOW_SETTINGS_WINDOW);
-    ImGui::SliderFloat("step size", &functionParameters::STEP, 0.0f, 1.0f);
+    ImGui::Text("Set general settings:");
     ImGui::SliderInt("max. iterations", &functionParameters::MAX_ITER, 0, 255);
     ImGui::SliderFloat("Re offset", &functionParameters::RE_OFFSET, -2.0f, 2.0f);
     ImGui::SliderFloat("Im offset", &functionParameters::IM_OFFSET, -2.0f, 2.0f);
@@ -66,11 +66,15 @@ void drawImgui() {
     ImGui::SliderFloat("convergent Red", &functionParameters::C_RED, 0.0f, 1.0f);
     ImGui::SliderFloat("convergent Green", &functionParameters::C_GREEN, 0.0f, 1.0f);
     ImGui::SliderFloat("convergent Blue", &functionParameters::C_BLUE, 0.0f, 1.0f);
-    ImGui::Text("RE_START: %.3f", functionParameters::RE_START);
-    ImGui::Text("IM_START: %.3f", functionParameters::IM_START);
+    ImGui::Text("Display info:\nstep size %.6f\n", functionParameters::STEP);
+    ImGui::Text(
+      "Area: %.6f < x < %.6f\n      %.6f < y < %.6f", functionParameters::RE_START,
+      functionParameters::RE_START + functionParameters::STEP * mainWindow::WIDTH, functionParameters::IM_START,
+      functionParameters::IM_START + functionParameters::STEP * mainWindow::HEIGHT);
     ImGui::Text(
       "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     // if (ImGui::Button("Close")) {imGuiWindow::SHOW_SETTINGS_WINDOW = false};
+    ImGui::Text("Mouse x: %.f\nMouse y: %.f", input::MOUSE_X, input::MOUSE_Y);
     ImGui::End();
   }
 

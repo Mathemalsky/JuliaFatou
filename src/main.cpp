@@ -97,6 +97,7 @@ int main(int, char**) {
   glfwSetKeyCallback(window, keyCallback);
   glfwSetScrollCallback(window, scrollCallback);
   glfwSetWindowSizeCallback(window, windowSizeCallback);
+  glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
@@ -104,7 +105,7 @@ int main(int, char**) {
     glfwPollEvents();
 
     // handle Events triggert by user input, like keyboard etc.
-    handleFastEvents();
+    handleFastEvents(window);
 
     // draw the julia fatou image
     drawJuliaFatouImage(textureImg, cudaPixels);

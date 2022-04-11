@@ -19,6 +19,8 @@ int MAX_ITER;
 
 namespace input {
 std::unordered_map<int, bool> STATE;
+double MOUSE_X;
+double MOUSE_Y;
 }  // namespace input
 
 namespace imGuiWindow {

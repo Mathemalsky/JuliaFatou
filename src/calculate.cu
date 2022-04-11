@@ -57,8 +57,7 @@ __global__ static void calculatePixelsGPU(
       ++iteration;
       if (check_conv && (z / z_prev - Complex(1, 0)).squaredAbs() < functionParameters::CONVERGENCE_LIMIT) {
         iteration = -iteration;
-        //std::cout<<startRe + idx * step << " " << startIm + idy * step << iteration <<"\n";
-        break; // escapes the while loop
+        break;  // escapes the while loop
       }
     } while (iteration < max_iter && z.squaredAbs() < functionParameters::NORM_LIMIT);
 
@@ -69,7 +68,7 @@ __global__ static void calculatePixelsGPU(
       cudaPixels[3 * (width * idy + idx) + 2] = std::round((dCol.blue * iteration * universal::MAX_BYTE) / max_iter);
     }
     else {
-      iteration = -iteration;
+      iteration                               = -iteration;
       cudaPixels[3 * (width * idy + idx)]     = std::round((cCol.red * iteration * universal::MAX_BYTE) / max_iter);
       cudaPixels[3 * (width * idy + idx) + 1] = std::round((cCol.green * iteration * universal::MAX_BYTE) / max_iter);
       cudaPixels[3 * (width * idy + idx) + 2] = std::round((cCol.blue * iteration * universal::MAX_BYTE) / max_iter);

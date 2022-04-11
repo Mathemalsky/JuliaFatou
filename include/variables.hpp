@@ -19,6 +19,8 @@ extern int MAX_ITER;
 
 namespace input {
 extern std::unordered_map<int, bool> STATE;
+extern double MOUSE_X;
+extern double MOUSE_Y;
 }  // namespace input
 
 namespace imGuiWindow {
