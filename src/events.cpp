@@ -26,6 +26,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
   if (key == GLFW_KEY_F3 && action == GLFW_PRESS) {
     toggleSettingsWindow();
   }
+  if (key == GLFW_KEY_F4 && action == GLFW_PRESS) {
+    toggleMouseUse();
+  }
   if (key == GLFW_KEY_R && action == GLFW_PRESS) {
     reset();
   }
@@ -75,6 +78,15 @@ void toggleSettingsWindow() {
   }
 }
 
+void toggleMouseUse() {
+  if (input::MOUSE_USE == true) {
+    input::MOUSE_USE = false;
+  }
+  else {
+    input::MOUSE_USE = true;
+  }
+}
+
 // set setting to standard
 void reset() {
   functionParameters::RE_START = functionParameters::INITIAL_RE_START;
@@ -101,7 +113,7 @@ void handleFastEvents(GLFWwindow* window) {
     RE_START -= control::RELATIVE_MOVE * STEP * mainWindow::WIDTH;
   }
   // move the display area by mouse cursor
-  if (input::STATE[GLFW_MOUSE_BUTTON_LEFT]) {
+  if (input::MOUSE_USE && input::STATE[GLFW_MOUSE_BUTTON_LEFT]) {
     double x, y;
     glfwGetCursorPos(window, &x, &y);
     x -= input::MOUSE_X;

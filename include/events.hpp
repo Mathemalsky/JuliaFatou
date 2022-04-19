@@ -8,6 +8,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 void toggleHelpWindow();
 void toggleSettingsWindow();
+void toggleMouseUse();
 void reset();
 void handleFastEvents(GLFWwindow* window);
 

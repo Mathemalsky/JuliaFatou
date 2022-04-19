@@ -60,6 +60,12 @@ int main(int, char**) {
   gladLoadGL();
   glfwSwapInterval(1);  // enable vsync
 
+  // set callbacks for keyboard and scrolling
+  glfwSetKeyCallback(window, keyCallback);
+  glfwSetScrollCallback(window, scrollCallback);
+  glfwSetWindowSizeCallback(window, windowSizeCallback);
+  glfwSetMouseButtonCallback(window, mouseButtonCallback);
+
   // set initial state of the settings window
   initImGuiWindows();
   mainWindow::initMainWindow();
@@ -92,12 +98,6 @@ int main(int, char**) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   glViewport(0, 0, mainWindow::WIDTH, mainWindow::HEIGHT);
-
-  // set callbacks for keyboard and scrolling
-  glfwSetKeyCallback(window, keyCallback);
-  glfwSetScrollCallback(window, scrollCallback);
-  glfwSetWindowSizeCallback(window, windowSizeCallback);
-  glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
