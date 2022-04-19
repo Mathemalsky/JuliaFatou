@@ -4,10 +4,10 @@
 
 namespace functionParameters {
 float RE_OFFSET;
-float RE_START;
-float IM_START;
 float IM_OFFSET;
-float STEP;
+double RE_START;
+double IM_START;
+double STEP;
 float C_RED;
 float C_GREEN;
 float C_BLUE;

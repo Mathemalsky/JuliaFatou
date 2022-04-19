@@ -41,8 +41,8 @@ __device__ static Complex function(const Complex& z, const float reOffset, const
 
 // iterate the function and calculate the color
 __global__ static void calculatePixelsGPU(
-  Byte* cudaPixels, const unsigned int imageSize, const unsigned int width, const float step,
-  const unsigned int max_iter, const float startRe, const float startIm, const float reOffset, const float imOffset,
+  Byte* cudaPixels, const unsigned int imageSize, const unsigned int width, const double step,
+  const unsigned int max_iter, const double startRe, const double startIm, const double reOffset, const double imOffset,
   const RGB dCol, const RGB cCol, const bool check_conv) {
   int id = blockIdx.x * blockDim.x + threadIdx.x;
   if (id < imageSize) {

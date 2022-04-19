@@ -66,14 +66,13 @@ void drawImgui() {
     ImGui::SliderFloat("convergent Red", &functionParameters::C_RED, 0.0f, 1.0f);
     ImGui::SliderFloat("convergent Green", &functionParameters::C_GREEN, 0.0f, 1.0f);
     ImGui::SliderFloat("convergent Blue", &functionParameters::C_BLUE, 0.0f, 1.0f);
-    ImGui::Text("Display info:\nstep size %.6f\n", functionParameters::STEP);
+    ImGui::Text("Display info:\nstep size %.6e\n", functionParameters::STEP);
     ImGui::Text(
       "Area: %.6f < x < %.6f\n      %.6f < y < %.6f", functionParameters::RE_START,
       functionParameters::RE_START + functionParameters::STEP * mainWindow::WIDTH, functionParameters::IM_START,
       functionParameters::IM_START + functionParameters::STEP * mainWindow::HEIGHT);
     ImGui::Text(
       "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    // if (ImGui::Button("Close")) {imGuiWindow::SHOW_SETTINGS_WINDOW = false};
     ImGui::Text("Mouse x: %.f\nMouse y: %.f", input::MOUSE_X, input::MOUSE_Y);
     ImGui::End();
   }
@@ -83,6 +82,7 @@ void drawImgui() {
     ImGui::Text("F1      toggle visibility of this help window");
     ImGui::Text("F2      take screenshot");
     ImGui::Text("F3      toggle visibility of settingswindow");
+    ImGui::Text("F4      toggle the movement of the displayed part by mouse");
     ImGui::Text("LEFT    move displayed part of complex plane left,  direction -1");
     ImGui::Text("RIGHT   move displayed part of complex plane right, direction +1");
     ImGui::Text("UP      move displayed part of complex plane up,    direction +i");

@@ -3,11 +3,11 @@
 #include <unordered_map>
 
 namespace functionParameters {
-extern float RE_START;
-extern float RE_OFFSET;
-extern float IM_START;
 extern float IM_OFFSET;
-extern float STEP;
+extern float RE_OFFSET;
+extern double RE_START;
+extern double IM_START;
+extern double STEP;
 extern float D_RED;
 extern float D_GREEN;
 extern float D_BLUE;
